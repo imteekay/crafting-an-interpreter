@@ -1,0 +1,24 @@
+{
+  "name": "monkey-ts",
+  "version": "1.0.0",
+  "description": "The Monkey programming language's compiler written in TypeScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/leandrotk/monkey-ts.git"
+  },
+  "keywords": [
+    "compiler",
+    "programming-language",
+    "compiler-design"
+  ],
+  "author": "=",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leandrotk/monkey-ts/issues"
+  },
+  "homepage": "https://github.com/leandrotk/monkey-ts#readme"
+}
