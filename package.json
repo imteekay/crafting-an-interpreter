@@ -4,6 +4,7 @@
   "description": "The Monkey programming language's compiler written in TypeScript.",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
@@ -30,7 +31,9 @@
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "eslint": "^7.26.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "nodemon": "^2.0.7",
     "prettier": "^2.3.0",
+    "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   }
 }
