@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/leandrotk/monkey-ts/issues"
   },
-  "homepage": "https://github.com/leandrotk/monkey-ts#readme"
+  "homepage": "https://github.com/leandrotk/monkey-ts#readme",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
 }
