@@ -1,4 +1,4 @@
-type TokenType = string;
+export type TokenType = string;
 
 export class Token {
   type: TokenType;
@@ -33,4 +33,17 @@ export enum Tokens {
   // Keywords
   FUNCTION = 'FUNCTION',
   LET = 'LET',
+}
+
+interface KeywordsType {
+  [key: string]: string;
+}
+
+const Keywords: KeywordsType = {
+  fn: Tokens.FUNCTION,
+  let: Tokens.LET,
+};
+
+export function lookupIdent(ident: string) {
+  return ident in Keywords ? Keywords[ident] : Tokens.IDENT;
 }

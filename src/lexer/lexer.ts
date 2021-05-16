@@ -1,4 +1,4 @@
-import { Tokens, Token } from 'src/token/token';
+import { Tokens, Token, TokenType, lookupIdent } from 'src/token/token';
 
 export class Lexer {
   input: string;
@@ -17,7 +17,6 @@ export class Lexer {
 
   nextToken(): Token {
     const token = this.getToken();
-    this.readChar();
     return token;
   }
 
@@ -39,25 +38,88 @@ export class Lexer {
   }
 
   private getToken(): Token {
+    this.skipWhitespace();
+
     switch (this.char) {
       case '=':
-        return new Token(Tokens.ASSIGN, '=');
+        return this.buildToken(Tokens.ASSIGN, '=');
       case ';':
-        return new Token(Tokens.SEMICOLON, ';');
+        return this.buildToken(Tokens.SEMICOLON, ';');
       case '(':
-        return new Token(Tokens.LPAREN, '(');
+        return this.buildToken(Tokens.LPAREN, '(');
       case ')':
-        return new Token(Tokens.RPAREN, ')');
+        return this.buildToken(Tokens.RPAREN, ')');
       case ',':
-        return new Token(Tokens.COMMA, ',');
+        return this.buildToken(Tokens.COMMA, ',');
       case '+':
-        return new Token(Tokens.PLUS, '+');
+        return this.buildToken(Tokens.PLUS, '+');
       case '{':
-        return new Token(Tokens.LBRACE, '{');
+        return this.buildToken(Tokens.LBRACE, '{');
       case '}':
-        return new Token(Tokens.RBRACE, '}');
+        return this.buildToken(Tokens.RBRACE, '}');
+      case '':
+        return this.buildToken(Tokens.EOF, '');
       default:
-        return new Token(Tokens.EOF, '');
+        if (this.isLetter(this.char)) {
+          const tokenLiteral = this.readIdentifier();
+          const tokenType = lookupIdent(tokenLiteral);
+          return new Token(tokenType, tokenLiteral);
+        }
+
+        if (this.isDigit(this.char)) {
+          const tokenLiteral = this.readNumber();
+          return new Token(Tokens.INT, tokenLiteral);
+        }
+
+        return new Token(Tokens.ILLEGAL, this.char);
+    }
+  }
+
+  private buildToken(type: TokenType, literal: string) {
+    this.readChar();
+    return new Token(type, literal);
+  }
+
+  private readIdentifier() {
+    const initialCharPosition = this.position;
+
+    while (this.isLetter(this.char)) {
+      this.readChar();
+    }
+
+    return this.input.substring(initialCharPosition, this.position);
+  }
+
+  private readNumber() {
+    const initialIntPosition = this.position;
+
+    while (this.isDigit(this.char)) {
+      this.readChar();
+    }
+
+    return this.input.substring(initialIntPosition, this.position);
+  }
+
+  private isLetter(char: string) {
+    return (
+      ('a' <= char && char <= 'z') ||
+      ('A' <= char && char <= 'Z') ||
+      char === '_'
+    );
+  }
+
+  private isDigit(char: string) {
+    return '0' <= char && char <= '9';
+  }
+
+  private skipWhitespace() {
+    while (
+      this.char == ' ' ||
+      this.char == '\t' ||
+      this.char == '\n' ||
+      this.char == '\r'
+    ) {
+      this.readChar();
     }
   }
 }
