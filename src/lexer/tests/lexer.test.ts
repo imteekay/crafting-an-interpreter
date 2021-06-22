@@ -12,6 +12,8 @@ describe('Lexer', () => {
       };
 
       let result = add(five, ten);
+      !-/*5;
+      5 < 10 > 5;
     `;
 
     const tokens: Token[] = [
@@ -50,6 +52,18 @@ describe('Lexer', () => {
       { type: Tokens.COMMA, literal: ',' },
       { type: Tokens.IDENT, literal: 'ten' },
       { type: Tokens.RPAREN, literal: ')' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.BANG, literal: '!' },
+      { type: Tokens.MINUS, literal: '-' },
+      { type: Tokens.SLASH, literal: '/' },
+      { type: Tokens.ASTERISK, literal: '*' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.LESS_THAN, literal: '<' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.GREATER_THAN, literal: '>' },
+      { type: Tokens.INT, literal: '5' },
       { type: Tokens.SEMICOLON, literal: ';' },
       { type: Tokens.EOF, literal: '' },
     ];

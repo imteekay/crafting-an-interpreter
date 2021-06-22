@@ -21,6 +21,12 @@ export enum Tokens {
   // Operators
   ASSIGN = '=',
   PLUS = '+',
+  MINUS = '-',
+  BANG = '!',
+  ASTERISK = '*',
+  SLASH = '/',
+  LESS_THAN = '<',
+  GREATER_THAN = '>',
 
   // Delimiters
   COMMA = ',',

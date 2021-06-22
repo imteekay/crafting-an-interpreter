@@ -57,6 +57,18 @@ export class Lexer {
         return this.buildToken(Tokens.LBRACE, '{');
       case '}':
         return this.buildToken(Tokens.RBRACE, '}');
+      case '!':
+        return this.buildToken(Tokens.BANG, '!');
+      case '-':
+        return this.buildToken(Tokens.MINUS, '-');
+      case '/':
+        return this.buildToken(Tokens.SLASH, '/');
+      case '*':
+        return this.buildToken(Tokens.ASTERISK, '*');
+      case '<':
+        return this.buildToken(Tokens.LESS_THAN, '<');
+      case '>':
+        return this.buildToken(Tokens.GREATER_THAN, '>');
       case '':
         return this.buildToken(Tokens.EOF, '');
       default:
