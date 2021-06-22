@@ -14,6 +14,12 @@ describe('Lexer', () => {
       let result = add(five, ten);
       !-/*5;
       5 < 10 > 5;
+
+      if (5 < 10) {
+        return true;
+      } else {
+        return false;
+      }
     `;
 
     const tokens: Token[] = [
@@ -65,6 +71,23 @@ describe('Lexer', () => {
       { type: Tokens.GREATER_THAN, literal: '>' },
       { type: Tokens.INT, literal: '5' },
       { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.IF, literal: 'if' },
+      { type: Tokens.LPAREN, literal: '(' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.LESS_THAN, literal: '<' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.RPAREN, literal: ')' },
+      { type: Tokens.LBRACE, literal: '{' },
+      { type: Tokens.RETURN, literal: 'return' },
+      { type: Tokens.TRUE, literal: 'true' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.RBRACE, literal: '}' },
+      { type: Tokens.ELSE, literal: 'else' },
+      { type: Tokens.LBRACE, literal: '{' },
+      { type: Tokens.RETURN, literal: 'return' },
+      { type: Tokens.FALSE, literal: 'false' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.RBRACE, literal: '}' },
       { type: Tokens.EOF, literal: '' },
     ];
 

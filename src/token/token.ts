@@ -39,6 +39,11 @@ export enum Tokens {
   // Keywords
   FUNCTION = 'FUNCTION',
   LET = 'LET',
+  TRUE = 'TRUE',
+  FALSE = 'FALSE',
+  IF = 'IF',
+  ELSE = 'ELSE',
+  RETURN = 'RETURN',
 }
 
 interface KeywordsType {
@@ -48,6 +53,11 @@ interface KeywordsType {
 const Keywords: KeywordsType = {
   fn: Tokens.FUNCTION,
   let: Tokens.LET,
+  true: Tokens.TRUE,
+  false: Tokens.FALSE,
+  if: Tokens.IF,
+  else: Tokens.ELSE,
+  return: Tokens.RETURN,
 };
 
 export function lookupIdent(ident: string) {
