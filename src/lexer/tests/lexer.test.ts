@@ -20,6 +20,9 @@ describe('Lexer', () => {
       } else {
         return false;
       }
+
+      10 == 10;
+      10 != 9;
     `;
 
     const tokens: Token[] = [
@@ -88,6 +91,14 @@ describe('Lexer', () => {
       { type: Tokens.FALSE, literal: 'false' },
       { type: Tokens.SEMICOLON, literal: ';' },
       { type: Tokens.RBRACE, literal: '}' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.EQUAL, literal: '==' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.NOT_EQUAL, literal: '!=' },
+      { type: Tokens.INT, literal: '9' },
+      { type: Tokens.SEMICOLON, literal: ';' },
       { type: Tokens.EOF, literal: '' },
     ];
 

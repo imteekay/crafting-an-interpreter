@@ -44,6 +44,8 @@ export enum Tokens {
   IF = 'IF',
   ELSE = 'ELSE',
   RETURN = 'RETURN',
+  EQUAL = '==',
+  NOT_EQUAL = '!=',
 }
 
 interface KeywordsType {
