@@ -42,7 +42,12 @@ export class Lexer {
 
     switch (this.char) {
       case '=':
-        return this.buildToken(Tokens.ASSIGN, '=');
+        if (this.peekChar() === '=') {
+          this.readChar();
+          return this.buildToken(Tokens.EQUAL, '==');
+        } else {
+          return this.buildToken(Tokens.ASSIGN, '=');
+        }
       case ';':
         return this.buildToken(Tokens.SEMICOLON, ';');
       case '(':
@@ -57,6 +62,23 @@ export class Lexer {
         return this.buildToken(Tokens.LBRACE, '{');
       case '}':
         return this.buildToken(Tokens.RBRACE, '}');
+      case '!':
+        if (this.peekChar() === '=') {
+          this.readChar();
+          return this.buildToken(Tokens.NOT_EQUAL, '!=');
+        } else {
+          return this.buildToken(Tokens.BANG, '!');
+        }
+      case '-':
+        return this.buildToken(Tokens.MINUS, '-');
+      case '/':
+        return this.buildToken(Tokens.SLASH, '/');
+      case '*':
+        return this.buildToken(Tokens.ASTERISK, '*');
+      case '<':
+        return this.buildToken(Tokens.LESS_THAN, '<');
+      case '>':
+        return this.buildToken(Tokens.GREATER_THAN, '>');
       case '':
         return this.buildToken(Tokens.EOF, '');
       default:
@@ -120,6 +142,14 @@ export class Lexer {
       this.char == '\r'
     ) {
       this.readChar();
+    }
+  }
+
+  private peekChar() {
+    if (this.readPosition >= this.input.length) {
+      return '';
+    } else {
+      return this.input[this.readPosition];
     }
   }
 }

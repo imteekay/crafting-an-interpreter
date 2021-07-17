@@ -12,6 +12,17 @@ describe('Lexer', () => {
       };
 
       let result = add(five, ten);
+      !-/*5;
+      5 < 10 > 5;
+
+      if (5 < 10) {
+        return true;
+      } else {
+        return false;
+      }
+
+      10 == 10;
+      10 != 9;
     `;
 
     const tokens: Token[] = [
@@ -50,6 +61,43 @@ describe('Lexer', () => {
       { type: Tokens.COMMA, literal: ',' },
       { type: Tokens.IDENT, literal: 'ten' },
       { type: Tokens.RPAREN, literal: ')' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.BANG, literal: '!' },
+      { type: Tokens.MINUS, literal: '-' },
+      { type: Tokens.SLASH, literal: '/' },
+      { type: Tokens.ASTERISK, literal: '*' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.LESS_THAN, literal: '<' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.GREATER_THAN, literal: '>' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.IF, literal: 'if' },
+      { type: Tokens.LPAREN, literal: '(' },
+      { type: Tokens.INT, literal: '5' },
+      { type: Tokens.LESS_THAN, literal: '<' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.RPAREN, literal: ')' },
+      { type: Tokens.LBRACE, literal: '{' },
+      { type: Tokens.RETURN, literal: 'return' },
+      { type: Tokens.TRUE, literal: 'true' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.RBRACE, literal: '}' },
+      { type: Tokens.ELSE, literal: 'else' },
+      { type: Tokens.LBRACE, literal: '{' },
+      { type: Tokens.RETURN, literal: 'return' },
+      { type: Tokens.FALSE, literal: 'false' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.RBRACE, literal: '}' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.EQUAL, literal: '==' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.INT, literal: '10' },
+      { type: Tokens.NOT_EQUAL, literal: '!=' },
+      { type: Tokens.INT, literal: '9' },
       { type: Tokens.SEMICOLON, literal: ';' },
       { type: Tokens.EOF, literal: '' },
     ];

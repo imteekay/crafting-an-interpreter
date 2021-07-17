@@ -21,6 +21,12 @@ export enum Tokens {
   // Operators
   ASSIGN = '=',
   PLUS = '+',
+  MINUS = '-',
+  BANG = '!',
+  ASTERISK = '*',
+  SLASH = '/',
+  LESS_THAN = '<',
+  GREATER_THAN = '>',
 
   // Delimiters
   COMMA = ',',
@@ -33,6 +39,13 @@ export enum Tokens {
   // Keywords
   FUNCTION = 'FUNCTION',
   LET = 'LET',
+  TRUE = 'TRUE',
+  FALSE = 'FALSE',
+  IF = 'IF',
+  ELSE = 'ELSE',
+  RETURN = 'RETURN',
+  EQUAL = '==',
+  NOT_EQUAL = '!=',
 }
 
 interface KeywordsType {
@@ -42,6 +55,11 @@ interface KeywordsType {
 const Keywords: KeywordsType = {
   fn: Tokens.FUNCTION,
   let: Tokens.LET,
+  true: Tokens.TRUE,
+  false: Tokens.FALSE,
+  if: Tokens.IF,
+  else: Tokens.ELSE,
+  return: Tokens.RETURN,
 };
 
 export function lookupIdent(ident: string) {
