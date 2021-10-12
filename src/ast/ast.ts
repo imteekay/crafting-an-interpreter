@@ -4,18 +4,26 @@ interface Node {
   tokenLiteral: () => string;
 }
 
-interface Statement extends Node {}
-interface Expression extends Node {}
+export interface Statement extends Node {
+  token: Token;
+  name: Identifier;
+  value: Expression;
+}
+
+export interface Expression extends Node {
+  token: Token;
+  value: string;
+}
 
 export class Program {
-  statements: Statement[];
+  statements: Statement[] = [];
 
   tokenLiteral() {
     return this.statements.length > 0 ? this.statements[0].tokenLiteral() : '';
   }
 }
 
-class Identifier implements Expression {
+export class Identifier implements Expression {
   token: Token;
   value: string;
 
