@@ -2,10 +2,13 @@ import { Program, LetStatement, Identifier } from 'src/ast/ast';
 import { Lexer } from 'src/lexer/lexer';
 import { Token, Tokens, TokenType } from 'src/token/token';
 
+type Error = string;
+
 export class Parser {
   lexer: Lexer;
   currentToken: Token;
   peekToken: Token;
+  errors: Error[];
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
