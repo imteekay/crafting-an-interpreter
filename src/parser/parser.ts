@@ -5,13 +5,14 @@ import { Token, Tokens, TokenType } from 'token/token';
 type Error = string;
 
 export class Parser {
-  lexer: Lexer;
-  currentToken: Token;
-  peekToken: Token;
-  errors: Error[];
+  private lexer: Lexer;
+  private currentToken: Token;
+  private peekToken: Token;
+  private errors: Error[];
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
+    this.errors = [];
     this.nextToken();
     this.nextToken();
   }
@@ -35,6 +36,10 @@ export class Parser {
     }
 
     return program;
+  }
+
+  getErrors() {
+    return this.errors;
   }
 
   private parseStatement() {
@@ -85,6 +90,12 @@ export class Parser {
       return true;
     }
 
+    this.peekError(token);
     return false;
+  }
+
+  private peekError(token: TokenType) {
+    const msg = `expected next token to be ${token}, got ${this.peekToken.type} instead`;
+    this.errors.push(msg);
   }
 }
