@@ -18,7 +18,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "rootDirs": ["./src"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

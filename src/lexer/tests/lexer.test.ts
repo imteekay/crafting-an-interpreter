@@ -1,5 +1,5 @@
-import { Tokens, Token } from 'src/token/token';
-import { Lexer } from '../lexer';
+import { Tokens, Token } from 'token/token';
+import { Lexer } from 'lexer/lexer';
 
 describe('Lexer', () => {
   it('verifies tokens', () => {
