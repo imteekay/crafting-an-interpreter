@@ -1,6 +1,6 @@
 import readline from 'readline';
-import { Tokens } from '../token/token';
-import { Lexer } from '../lexer/lexer';
+import { Tokens } from 'token/token';
+import { Lexer } from 'lexer/lexer';
 
 const ScannerClose = {
   exit: 'exit',
