@@ -33,6 +33,7 @@ describe('Parser', () => {
     it('parses an input with error', () => {
       const input = `
         let 123;
+        let a;
       `;
 
       const lexer = new Lexer(input);
@@ -43,6 +44,7 @@ describe('Parser', () => {
       const errors = parser.getErrors();
       const expectedErrors = [
         'expected next token to be IDENT, got INT instead',
+        'expected next token to be =, got ; instead',
       ];
 
       errors.forEach((error, index) => {
