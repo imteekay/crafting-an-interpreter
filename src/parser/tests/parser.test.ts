@@ -1,5 +1,5 @@
-import { Lexer } from 'src/lexer/lexer';
-import { Parser } from 'src/parser/parser';
+import { Lexer } from 'lexer/lexer';
+import { Parser } from 'parser/parser';
 
 describe('Parser', () => {
   describe('parseProgram', () => {

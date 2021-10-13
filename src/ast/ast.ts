@@ -1,4 +1,4 @@
-import { Token } from 'src/token/token';
+import { Token } from 'token/token';
 
 interface Node {
   tokenLiteral: () => string;
