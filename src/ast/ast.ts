@@ -41,6 +41,7 @@ export class LetStatement implements BaseStatement {
 export class ReturnStatement implements BaseStatement {
   token: Token;
   kind: StatementKind.Return;
+  returnValue: Expression;
 
   constructor(token: Token) {
     this.token = token;
