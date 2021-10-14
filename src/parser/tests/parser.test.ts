@@ -1,3 +1,4 @@
+import { LetStatement, StatementKind } from 'ast/ast';
 import { Lexer } from 'lexer/lexer';
 import { Parser } from 'parser/parser';
 
@@ -24,9 +25,11 @@ describe('Parser', () => {
       tests.forEach(({ identifier }, index) => {
         const statement = program.statements[index];
 
-        expect(statement.tokenLiteral()).toEqual('let');
-        expect(statement.name.value).toEqual(identifier);
-        expect(statement.name.tokenLiteral()).toEqual(identifier);
+        if (statement.kind === StatementKind.Let) {
+          expect(statement.tokenLiteral()).toEqual('let');
+          expect(statement.name.value).toEqual(identifier);
+          expect(statement.name.tokenLiteral()).toEqual(identifier);
+        }
       });
     });
 
