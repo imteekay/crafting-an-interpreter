@@ -1,9 +1,10 @@
+import { StatementKind } from 'ast/ast';
 import { Lexer } from 'lexer/lexer';
 import { Parser } from 'parser/parser';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
-    it('parses an input', () => {
+    it('parses the let statement', () => {
       const input = `
         let x = 5;
         let y = 10;
@@ -24,9 +25,37 @@ describe('Parser', () => {
       tests.forEach(({ identifier }, index) => {
         const statement = program.statements[index];
 
-        expect(statement.tokenLiteral()).toEqual('let');
-        expect(statement.name.value).toEqual(identifier);
-        expect(statement.name.tokenLiteral()).toEqual(identifier);
+        if (statement.kind === StatementKind.Let) {
+          expect(statement.tokenLiteral()).toEqual('let');
+          expect(statement.name.value).toEqual(identifier);
+          expect(statement.name.tokenLiteral()).toEqual(identifier);
+        }
+      });
+    });
+
+    it('parses the return statement', () => {
+      const input = `
+        return 5;
+        return 10;
+        return 10000;
+      `;
+
+      const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+
+      const tests = [
+        { tokenLiteral: 'return' },
+        { tokenLiteral: 'return' },
+        { tokenLiteral: 'return' },
+      ];
+
+      tests.forEach(({ tokenLiteral }, index) => {
+        const statement = program.statements[index];
+
+        if (statement.kind === StatementKind.Return) {
+          expect(statement.tokenLiteral()).toEqual(tokenLiteral);
+        }
       });
     });
 
