@@ -9,7 +9,6 @@ describe('Parser', () => {
         let x = 5;
         let y = 10;
         let foobar = 10000;
-        let 123;
       `;
 
       const lexer = new Lexer(input);
