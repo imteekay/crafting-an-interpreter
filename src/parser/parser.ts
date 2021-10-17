@@ -54,17 +54,17 @@ export class Parser {
   }
 
   private parseLetStatement() {
-    const statement = new LetStatement();
-    statement.token = this.currentToken;
+    const statement = new LetStatement(this.currentToken);
 
     if (!this.expectPeek(Tokens.IDENT)) {
       return null;
     }
 
-    const identifier = new Identifier();
+    const identifier = new Identifier(
+      this.currentToken,
+      this.currentToken.literal
+    );
 
-    identifier.token = this.currentToken;
-    identifier.value = this.currentToken.literal;
     statement.name = identifier;
 
     if (!this.expectPeek(Tokens.ASSIGN)) {
