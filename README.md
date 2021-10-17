@@ -9,3 +9,7 @@ The Monkey programming language's compiler written in TypeScript.
 - [Lexical Analysis - Part 2](https://leandrotk.github.io/series/building-an-interpreter/building-an-interpreter-lexical-analysis-part-2.html)
 - [Lexical Analysis - Part 3](https://leandrotk.github.io/series/building-an-interpreter/building-an-interpreter-lexical-analysis-part-3.html)
 - [The REPL](https://leandrotk.github.io/series/building-an-interpreter/building-an-interpreter-repl.html)
+
+## Series on markdown
+
+- [Series on markdown](https://github.com/leandrotk/monkey-ts/tree/main/series)
