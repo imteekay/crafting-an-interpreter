@@ -22,6 +22,11 @@ export class Identifier implements Expression {
   token: Token;
   value: string;
 
+  constructor(token: Token, value: string) {
+    this.token = token;
+    this.value = value;
+  }
+
   tokenLiteral() {
     return this.token.literal;
   }
@@ -32,6 +37,10 @@ export class LetStatement implements BaseStatement {
   name: Identifier;
   value: Expression;
   kind: StatementKind.Let = StatementKind.Let;
+
+  constructor(token: Token) {
+    this.token = token;
+  }
 
   tokenLiteral() {
     return this.token.literal;
