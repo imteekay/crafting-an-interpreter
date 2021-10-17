@@ -80,7 +80,6 @@ export class Parser {
 
   private parseReturnStatement() {
     const statement = new ReturnStatement(this.currentToken);
-    this.nextToken();
 
     while (!this.currentTokenIs(Tokens.SEMICOLON)) {
       this.nextToken();

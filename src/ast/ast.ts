@@ -12,11 +12,11 @@ interface Node {
   tokenLiteral: () => string;
 }
 
-export interface BaseStatement extends Node {
+interface BaseStatement extends Node {
   kind: StatementKindType;
 }
 
-export interface Expression extends Node {}
+interface Expression extends Node {}
 
 export class Identifier implements Expression {
   token: Token;
@@ -36,10 +36,11 @@ export class LetStatement implements BaseStatement {
   token: Token;
   name: Identifier;
   value: Expression;
-  kind: StatementKind.Let = StatementKind.Let;
+  kind: StatementKind.Let;
 
   constructor(token: Token) {
     this.token = token;
+    this.kind = StatementKind.Let;
   }
 
   tokenLiteral() {
