@@ -1,6 +1,6 @@
-import { StatementKind } from 'ast/ast';
-import { Lexer } from 'lexer/lexer';
-import { Parser } from 'parser/parser';
+import { StatementKind } from 'ast';
+import { Lexer } from 'lexer';
+import { Parser } from 'parser';
 
 describe('Parser', () => {
   describe('parseProgram', () => {

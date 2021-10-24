@@ -1,4 +1,4 @@
-import { Token } from 'token/token';
+import { Token } from 'token';
 
 export enum StatementKind {
   Let = 'let',

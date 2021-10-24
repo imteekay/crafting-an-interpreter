@@ -1,6 +1,6 @@
-import { Program, LetStatement, Identifier, ReturnStatement } from 'ast/ast';
-import { Lexer } from 'lexer/lexer';
-import { Token, Tokens, TokenType } from 'token/token';
+import { Program, LetStatement, Identifier, ReturnStatement } from 'ast';
+import { Lexer } from 'lexer';
+import { Token, Tokens, TokenType } from 'token';
 
 type Error = string;
 

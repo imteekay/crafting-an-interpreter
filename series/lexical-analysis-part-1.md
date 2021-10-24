@@ -98,7 +98,7 @@ Our lexer will receive the source code input and it'll have a method called `nex
 To validate our `Lexer` code, let's add tests to match tokens.
 
 ```tsx
-import { Tokens, Token } from 'src/token/token';
+import { Tokens, Token } from 'src/token';
 import { Lexer } from '../lexer';
 
 describe('Lexer', () => {
