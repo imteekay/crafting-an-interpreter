@@ -72,8 +72,8 @@ Built an object and an array to have all the possible ways to exit the REPL, and
 To print the tokens, we need to instantiate our Lexer class with the input, and print token by token until it gets an `EOF` token type.
 
 ```jsx
-import { Tokens } from '../token/token';
-import { Lexer } from '../lexer/lexer';
+import { Tokens } from '../token';
+import { Lexer } from '../lexer';
 
 const lexer = new Lexer(input);
 
@@ -114,8 +114,8 @@ To finish the REPL, I wanted to wrap this code into a `startRepl` function with 
 
 ```jsx
 import readline from 'readline';
-import { Tokens } from '../token/token';
-import { Lexer } from '../lexer/lexer';
+import { Tokens } from '../token';
+import { Lexer } from '../lexer';
 
 const ScannerClose = {
   exit: 'exit',
