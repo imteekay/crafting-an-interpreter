@@ -1,0 +1,39 @@
+name: Unit tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Read .nvmrc
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        id: nvm
+      - name: Use Node.js (.nvmrc)
+        uses: actions/setup-node@v2
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+      - name: Install dependencies
+        run: yarn
+      - name: Run Jest tests
+        run: yarn test
+
+      - name: Unit Tests ✅
+        if: ${{ success() }}
+        run: |
+          curl --request POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --header 'content-type: application/json' --data '{
+            "context": "tests",
+            "state": "success",
+            "description": "Tests passed",
+            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'
+      - name: Unit Tests 🚨
+        if: ${{ failure() }}
+        run: |
+          curl --request POST --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' --header 'content-type: application/json' --data '{
+            "context": "tests",
+            "state": "failure",
+            "description": "Tests failed",
+            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'
