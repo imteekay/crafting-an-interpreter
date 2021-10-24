@@ -16,4 +16,16 @@ export class LetStatement implements BaseStatement {
   tokenLiteral() {
     return this.token.literal;
   }
+
+  string() {
+    const strings = [this.tokenLiteral(), ' ', this.name.string(), ' = '];
+
+    if (this.value !== null) {
+      strings.push(this.value.string());
+    }
+
+    strings.push(';');
+
+    return strings.join('');
+  }
 }

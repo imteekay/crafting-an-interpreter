@@ -14,4 +14,16 @@ export class ReturnStatement implements BaseStatement {
   tokenLiteral() {
     return this.token.literal;
   }
+
+  string() {
+    const strings = [this.tokenLiteral(), ' '];
+
+    if (this.returnValue !== null) {
+      strings.push(this.returnValue.string());
+    }
+
+    strings.push(';');
+
+    return strings.join('');
+  }
 }
