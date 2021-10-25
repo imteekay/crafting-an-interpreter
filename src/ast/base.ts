@@ -1,4 +1,4 @@
-import { Identifier } from 'ast';
+import { Identifier } from 'ast/Identifier';
 import { ExpressionStatement } from 'ast/ExpressionStatement';
 import { LetStatement } from 'ast/LetStatement';
 import { ReturnStatement } from 'ast/ReturnStatement';
