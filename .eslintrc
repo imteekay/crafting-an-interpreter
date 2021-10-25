@@ -11,6 +11,8 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "@typescript-eslint/explicit-module-boundary-types": ["off"],
+    "@typescript-eslint/no-empty-interface": ["off"]
   }
 }
