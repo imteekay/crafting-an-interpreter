@@ -1,11 +1,11 @@
 import { Token } from 'token';
 import { Identifier } from 'ast/Identifier';
-import { Expression, BaseStatement, StatementKind } from 'ast/base';
+import { BaseExpression, BaseStatement, StatementKind } from 'ast/base';
 
 export class LetStatement implements BaseStatement {
   token: Token;
   name: Identifier;
-  value: Expression;
+  value: BaseExpression;
   kind: StatementKind.Let;
 
   constructor(token: Token) {

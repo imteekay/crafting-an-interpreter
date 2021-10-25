@@ -1,4 +1,5 @@
 import { StatementKind } from 'ast';
+import { ExpressionKind } from 'ast/base';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { checkParserErrors } from './checkParserErrors';
@@ -99,7 +100,10 @@ describe('Parser', () => {
 
       checkParserErrors(errors);
 
-      if (statement.kind === StatementKind.Expression) {
+      if (
+        statement.kind === StatementKind.Expression &&
+        statement.expression.kind === ExpressionKind.IntegerLiteral
+      ) {
         expect(statements.length).toEqual(1);
 
         const expression = statement.expression;
@@ -121,7 +125,10 @@ describe('Parser', () => {
 
       checkParserErrors(errors);
 
-      if (statement.kind === StatementKind.Expression) {
+      if (
+        statement.kind === StatementKind.Expression &&
+        statement.expression.kind === ExpressionKind.IntegerLiteral
+      ) {
         expect(statements.length).toEqual(1);
 
         const expression = statement.expression;
@@ -129,6 +136,47 @@ describe('Parser', () => {
         expect(expression.value).toEqual(10);
         expect(expression.tokenLiteral()).toEqual('10');
       }
+    });
+
+    it('parses prefix expressions', () => {
+      type Test = {
+        input: string;
+        operator: string;
+        integerValue: number;
+      };
+
+      const tests: Test[] = [
+        { input: '!5;', operator: '!', integerValue: 5 },
+        { input: '-15;', operator: '-', integerValue: 15 },
+      ];
+
+      tests.forEach((test: Test) => {
+        const lexer = new Lexer(test.input);
+        const parser = new Parser(lexer);
+        const program = parser.parseProgram();
+        const statements = program.statements;
+        const errors = parser.getErrors();
+        const statement = statements[0];
+
+        checkParserErrors(errors);
+
+        if (
+          statement.kind === StatementKind.Expression &&
+          statement.expression.kind === ExpressionKind.Prefix
+        ) {
+          const expression = statement.expression;
+          const rightExpression = expression.right;
+
+          expect(expression.operator).toEqual(test.operator);
+
+          if (rightExpression.kind == ExpressionKind.IntegerLiteral) {
+            expect(rightExpression.value).toEqual(test.integerValue);
+            expect(rightExpression.tokenLiteral()).toEqual(
+              test.integerValue.toString()
+            );
+          }
+        }
+      });
     });
   });
 });

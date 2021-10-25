@@ -1,13 +1,15 @@
 import { Token } from 'token';
-import { Expression } from 'ast/base';
+import { BaseExpression, ExpressionKind } from 'ast/base';
 
-export class IntegerLiteral implements Expression {
+export class IntegerLiteral implements BaseExpression {
   token: Token;
   value: number;
+  kind: ExpressionKind.IntegerLiteral;
 
   constructor(token: Token, value: number) {
     this.token = token;
     this.value = value;
+    this.kind = ExpressionKind.IntegerLiteral;
   }
 
   tokenLiteral() {
