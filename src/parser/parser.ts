@@ -4,7 +4,7 @@ import {
   Identifier,
   ReturnStatement,
   ExpressionStatement,
-  Expressions,
+  Expression,
 } from 'ast';
 
 import { BaseExpression } from 'ast';
@@ -15,8 +15,8 @@ import { Token, Tokens, TokenType } from 'token';
 
 export type ParserError = string;
 
-type prefixParseFn = () => Expressions;
-type infixParseFn = (expression: BaseExpression) => Expressions;
+type prefixParseFn = () => Expression;
+type infixParseFn = (expression: BaseExpression) => Expression;
 
 enum Precedence {
   LOWEST = 1,
