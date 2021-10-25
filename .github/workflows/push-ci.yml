@@ -19,8 +19,11 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: Typecheck source code
+      - name: Type check code
         run: yarn typecheck
+
+      - name: Check code format
+        run: yarn prettier:check
 
       - name: Run Jest tests
         run: yarn test
