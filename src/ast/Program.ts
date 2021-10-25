@@ -1,7 +1,8 @@
+import { ExpressionStatement } from 'ast/ExpressionStatement';
 import { LetStatement } from 'ast/LetStatement';
 import { ReturnStatement } from 'ast/ReturnStatement';
 
-type Statement = LetStatement | ReturnStatement;
+type Statement = LetStatement | ReturnStatement | ExpressionStatement;
 
 export class Program {
   statements: Statement[] = [];

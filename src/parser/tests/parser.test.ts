@@ -15,6 +15,9 @@ describe('Parser', () => {
       const lexer = new Lexer(input);
       const parser = new Parser(lexer);
       const program = parser.parseProgram();
+      const errors = parser.getErrors();
+
+      checkParserErrors(errors);
 
       const tests = [
         { identifier: 'x' },
@@ -90,25 +93,20 @@ describe('Parser', () => {
       const lexer = new Lexer(input);
       const parser = new Parser(lexer);
       const program = parser.parseProgram();
+      const statements = program.statements;
       const errors = parser.getErrors();
+      const statement = statements[0];
 
       checkParserErrors(errors);
 
-      // const tests = [
-      //   { identifier: 'x' },
-      //   { identifier: 'y' },
-      //   { identifier: 'foobar' },
-      // ];
+      if (statement.kind === StatementKind.Expression) {
+        expect(statements.length).toEqual(1);
 
-      // tests.forEach(({ identifier }, index) => {
-      //   const statement = program.statements[index];
+        const expression = statement.expression;
 
-      //   if (statement.kind === StatementKind.Let) {
-      //     expect(statement.tokenLiteral()).toEqual('let');
-      //     expect(statement.name.value).toEqual(identifier);
-      //     expect(statement.name.tokenLiteral()).toEqual(identifier);
-      //   }
-      // });
+        expect(expression.value).toEqual('foobar');
+        expect(expression.tokenLiteral()).toEqual('foobar');
+      }
     });
   });
 });

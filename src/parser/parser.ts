@@ -1,12 +1,29 @@
-import { Program, LetStatement, Identifier, ReturnStatement } from 'ast';
+import {
+  Program,
+  LetStatement,
+  Identifier,
+  ReturnStatement,
+  ExpressionStatement,
+} from 'ast';
+
 import { Expression } from 'ast';
 import { Lexer } from 'lexer';
 import { Token, Tokens, TokenType } from 'token';
 
 export type ParserError = string;
 
-type prefixParseFn = () => Expression;
-type infixParseFn = (expression: Expression) => Expression;
+type prefixParseFn = () => Identifier;
+type infixParseFn = (expression: Expression) => Identifier;
+
+enum Precedence {
+  LOWEST = 1,
+  EQUALS, // ==
+  LESSGREATER, // > or <
+  SUM, // +
+  PRODUCT, // *
+  PREFIX, // -X or !X
+  CALL, // myFunction(X)
+}
 
 export class Parser {
   private lexer: Lexer;
@@ -21,6 +38,8 @@ export class Parser {
     this.errors = [];
     this.nextToken();
     this.nextToken();
+
+    this.registerPrefix(Tokens.IDENT, this.parseIdentifier.bind(this));
   }
 
   nextToken() {
@@ -55,7 +74,7 @@ export class Parser {
       case Tokens.RETURN:
         return this.parseReturnStatement();
       default:
-        return null;
+        return this.parseExpressionStatement();
     }
   }
 
@@ -94,6 +113,34 @@ export class Parser {
     return statement;
   }
 
+  private parseExpressionStatement() {
+    const statement = new ExpressionStatement(this.currentToken);
+    const expression = this.parseExpression(Precedence.LOWEST);
+
+    if (expression === null) {
+      return null;
+    }
+
+    statement.expression = expression;
+
+    if (this.peekTokenIs(Tokens.SEMICOLON)) {
+      this.nextToken();
+    }
+
+    return statement;
+  }
+
+  private parseExpression(precedence: number) {
+    const getPrefix = this.prefixParseFns[this.currentToken.type];
+
+    if (getPrefix === undefined) {
+      return null;
+    }
+
+    const leftExpression = getPrefix();
+    return leftExpression;
+  }
+
   private currentTokenIs(token: TokenType) {
     return this.currentToken.type === token;
   }
@@ -115,6 +162,10 @@ export class Parser {
   private peekError(token: TokenType) {
     const msg = `expected next token to be ${token}, got ${this.peekToken.type} instead`;
     this.errors.push(msg);
+  }
+
+  private parseIdentifier() {
+    return new Identifier(this.currentToken, this.currentToken.literal);
   }
 
   private registerPrefix(tokenType: TokenType, fn: prefixParseFn) {

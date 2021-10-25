@@ -1,9 +1,10 @@
 import { Token } from 'token';
-import { Expression, BaseStatement, StatementKind } from 'ast/base';
+import { BaseStatement, StatementKind } from 'ast/base';
+import { Identifier } from 'ast/Identifier';
 
 export class ExpressionStatement implements BaseStatement {
   token: Token;
-  expression: Expression;
+  expression: Identifier;
   kind: StatementKind.Expression;
 
   constructor(token: Token) {
