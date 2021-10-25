@@ -1,14 +1,20 @@
 import { Program, LetStatement, Identifier, ReturnStatement } from 'ast';
+import { Expression } from 'ast';
 import { Lexer } from 'lexer';
 import { Token, Tokens, TokenType } from 'token';
 
-type Error = string;
+export type ParserError = string;
+
+type prefixParseFn = () => Expression;
+type infixParseFn = (expression: Expression) => Expression;
 
 export class Parser {
   private lexer: Lexer;
   private currentToken: Token;
   private peekToken: Token;
-  private errors: Error[];
+  private errors: ParserError[];
+  private prefixParseFns: { [key: TokenType]: prefixParseFn } = {};
+  private infixParseFns: { [key: TokenType]: infixParseFn } = {};
 
   constructor(lexer: Lexer) {
     this.lexer = lexer;
@@ -109,5 +115,13 @@ export class Parser {
   private peekError(token: TokenType) {
     const msg = `expected next token to be ${token}, got ${this.peekToken.type} instead`;
     this.errors.push(msg);
+  }
+
+  private registerPrefix(tokenType: TokenType, fn: prefixParseFn) {
+    this.prefixParseFns[tokenType] = fn;
+  }
+
+  private registerInfix(tokenType: TokenType, fn: infixParseFn) {
+    this.infixParseFns[tokenType] = fn;
   }
 }

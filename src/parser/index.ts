@@ -1,1 +1,1 @@
-export { Parser } from 'parser/parser';
+export { Parser, ParserError } from 'parser/parser';

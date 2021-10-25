@@ -1,6 +1,7 @@
 import { StatementKind } from 'ast';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
+import { checkParserErrors } from './checkParserErrors';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -42,6 +43,9 @@ describe('Parser', () => {
       const lexer = new Lexer(input);
       const parser = new Parser(lexer);
       const program = parser.parseProgram();
+      const errors = parser.getErrors();
+
+      checkParserErrors(errors);
 
       const tests = [
         { tokenLiteral: 'return' },
@@ -78,6 +82,33 @@ describe('Parser', () => {
       errors.forEach((error, index) => {
         expect(error).toEqual(expectedErrors[index]);
       });
+    });
+
+    it('parses an identifier expression', () => {
+      const input = 'foobar;';
+
+      const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+      const errors = parser.getErrors();
+
+      checkParserErrors(errors);
+
+      // const tests = [
+      //   { identifier: 'x' },
+      //   { identifier: 'y' },
+      //   { identifier: 'foobar' },
+      // ];
+
+      // tests.forEach(({ identifier }, index) => {
+      //   const statement = program.statements[index];
+
+      //   if (statement.kind === StatementKind.Let) {
+      //     expect(statement.tokenLiteral()).toEqual('let');
+      //     expect(statement.name.value).toEqual(identifier);
+      //     expect(statement.name.tokenLiteral()).toEqual(identifier);
+      //   }
+      // });
     });
   });
 });
