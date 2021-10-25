@@ -7,13 +7,14 @@ import {
 } from 'ast';
 
 import { Expression } from 'ast';
+import { IntegerLiteral } from 'ast/IntegerLiteral';
 import { Lexer } from 'lexer';
 import { Token, Tokens, TokenType } from 'token';
 
 export type ParserError = string;
 
-type prefixParseFn = () => Identifier;
-type infixParseFn = (expression: Expression) => Identifier;
+type prefixParseFn = () => Identifier | IntegerLiteral;
+type infixParseFn = (expression: Expression) => Identifier | IntegerLiteral;
 
 enum Precedence {
   LOWEST = 1,
@@ -40,6 +41,7 @@ export class Parser {
     this.nextToken();
 
     this.registerPrefix(Tokens.IDENT, this.parseIdentifier.bind(this));
+    this.registerPrefix(Tokens.INT, this.parseIntegerLiteral.bind(this));
   }
 
   nextToken() {
@@ -166,6 +168,13 @@ export class Parser {
 
   private parseIdentifier() {
     return new Identifier(this.currentToken, this.currentToken.literal);
+  }
+
+  private parseIntegerLiteral() {
+    return new IntegerLiteral(
+      this.currentToken,
+      parseInt(this.currentToken.literal)
+    );
   }
 
   private registerPrefix(tokenType: TokenType, fn: prefixParseFn) {

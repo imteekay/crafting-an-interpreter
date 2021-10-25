@@ -108,5 +108,27 @@ describe('Parser', () => {
         expect(expression.tokenLiteral()).toEqual('foobar');
       }
     });
+
+    it('parses an integer literal expression', () => {
+      const input = '10;';
+
+      const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+      const statements = program.statements;
+      const errors = parser.getErrors();
+      const statement = statements[0];
+
+      checkParserErrors(errors);
+
+      if (statement.kind === StatementKind.Expression) {
+        expect(statements.length).toEqual(1);
+
+        const expression = statement.expression;
+
+        expect(expression.value).toEqual(10);
+        expect(expression.tokenLiteral()).toEqual('10');
+      }
+    });
   });
 });
