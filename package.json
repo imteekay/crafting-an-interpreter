@@ -48,6 +48,9 @@
     "typescript": "^4.4.4"
   },
   "lint-staged": {
-    "*.ts": "eslint --cache --fix"
+    "*.ts": [
+      "yarn lint",
+      "yarn prettier:check"
+    ]
   }
 }
