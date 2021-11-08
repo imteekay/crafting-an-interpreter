@@ -1,11 +1,11 @@
 import { Token } from 'token';
 import { Identifier } from 'ast/Identifier';
-import { Expression, BaseStatement, StatementKind } from 'ast/base';
+import { BaseExpression, BaseStatement, StatementKind } from 'ast/base';
 
 export class LetStatement implements BaseStatement {
   token: Token;
   name: Identifier;
-  value: Expression;
+  value: BaseExpression;
   kind: StatementKind.Let;
 
   constructor(token: Token) {
@@ -15,5 +15,17 @@ export class LetStatement implements BaseStatement {
 
   tokenLiteral() {
     return this.token.literal;
+  }
+
+  string() {
+    const strings = [this.tokenLiteral(), ' ', this.name.string(), ' = '];
+
+    if (this.value !== null) {
+      strings.push(this.value.string());
+    }
+
+    strings.push(';');
+
+    return strings.join('');
   }
 }

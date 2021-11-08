@@ -1,10 +1,10 @@
 import { Token } from 'token';
-import { Expression, BaseStatement, StatementKind } from 'ast/base';
+import { BaseExpression, BaseStatement, StatementKind } from 'ast/base';
 
 export class ReturnStatement implements BaseStatement {
   token: Token;
   kind: StatementKind.Return;
-  returnValue: Expression;
+  returnValue: BaseExpression;
 
   constructor(token: Token) {
     this.token = token;
@@ -13,5 +13,17 @@ export class ReturnStatement implements BaseStatement {
 
   tokenLiteral() {
     return this.token.literal;
+  }
+
+  string() {
+    const strings = [this.tokenLiteral(), ' '];
+
+    if (this.returnValue !== null) {
+      strings.push(this.returnValue.string());
+    }
+
+    strings.push(';');
+
+    return strings.join('');
   }
 }

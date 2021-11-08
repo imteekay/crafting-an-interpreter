@@ -1,15 +1,15 @@
 import { Token } from 'token';
 import { BaseExpression, ExpressionKind } from 'ast/base';
 
-export class Identifier implements BaseExpression {
+export class IntegerLiteral implements BaseExpression {
   token: Token;
-  value: string;
-  kind: ExpressionKind.Identifier;
+  value: number;
+  kind: ExpressionKind.IntegerLiteral;
 
-  constructor(token: Token, value: string) {
+  constructor(token: Token, value: number) {
     this.token = token;
     this.value = value;
-    this.kind = ExpressionKind.Identifier;
+    this.kind = ExpressionKind.IntegerLiteral;
   }
 
   tokenLiteral() {
@@ -17,6 +17,6 @@ export class Identifier implements BaseExpression {
   }
 
   string() {
-    return this.value;
+    return this.token.literal;
   }
 }
