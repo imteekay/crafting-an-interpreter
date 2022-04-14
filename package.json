@@ -2,7 +2,7 @@
   "name": "monkey-ts",
   "version": "1.0.0",
   "description": "The Monkey programming language's compiler written in TypeScript.",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon",
     "test": "vitest",
