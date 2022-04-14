@@ -21,8 +21,7 @@
     "baseUrl": "./src",
     "rootDirs": ["./src"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "types": ["vitest/globals"]
+    "emitDecoratorMetadata": true
   },
   "include": ["./src/**/*.ts"],
   "exclude": ["./node_modules/*", "dist"]
