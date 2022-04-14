@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/leandrotk/monkey-ts.git"
+    "url": "git+ssh://git@github.com/imteekay/monkey-ts.git"
   },
   "keywords": [
     "compiler",
@@ -26,9 +26,9 @@
   "author": "=",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leandrotk/monkey-ts/issues"
+    "url": "https://github.com/imteekay/monkey-ts/issues"
   },
-  "homepage": "https://github.com/leandrotk/monkey-ts#readme",
+  "homepage": "https://github.com/imteekay/monkey-ts",
   "devDependencies": {
     "@types/jest": "27.0.2",
     "@types/node": "15.3.0",
