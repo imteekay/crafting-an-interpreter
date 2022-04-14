@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Tokens, Token } from 'token';
 import { Lexer } from 'lexer';
 

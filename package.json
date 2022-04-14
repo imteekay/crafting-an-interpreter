@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "vitest",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
     "prettier:check": "prettier --check 'src/**/*.ts'",
