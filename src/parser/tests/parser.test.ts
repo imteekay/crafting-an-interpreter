@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
 import { Lexer } from 'lexer';

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { Identifier, LetStatement, Program } from 'ast';
 import { Tokens, Token } from 'token';
 
