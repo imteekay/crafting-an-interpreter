@@ -50,6 +50,7 @@ export class Parser {
 
   nextToken() {
     this.currentToken = this.peekToken;
+    // peekToken is always pointing to the next token
     this.peekToken = this.lexer.nextToken();
   }
 
@@ -87,6 +88,7 @@ export class Parser {
   private parseLetStatement() {
     const statement = new LetStatement(this.currentToken);
 
+    // We expect that after the let statement, we have the identifier
     if (!this.expectPeek(Tokens.IDENT)) {
       return null;
     }
