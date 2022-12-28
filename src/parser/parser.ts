@@ -1,21 +1,21 @@
 import {
   Program,
+  BaseExpression,
   LetStatement,
   Identifier,
+  IntegerLiteral,
   ReturnStatement,
   ExpressionStatement,
   Expression,
 } from 'ast';
 
-import { BaseExpression } from 'ast';
-import { IntegerLiteral } from 'ast/IntegerLiteral';
 import { PrefixExpression } from 'ast/PrefixExpression';
 import { Lexer } from 'lexer';
 import { Token, Tokens, TokenType } from 'token';
 
 export type ParserError = string;
 
-type prefixParseFn = () => Expression;
+type prefixParseFn = () => Expression | null;
 type infixParseFn = (expression: BaseExpression) => Expression;
 
 enum Precedence {
@@ -59,7 +59,7 @@ export class Parser {
     while (this.currentToken.type !== Tokens.EOF) {
       const statement = this.parseStatement();
 
-      if (statement !== null) {
+      if (statement) {
         program.statements.push(statement);
       }
 
@@ -121,6 +121,7 @@ export class Parser {
 
   private parseExpressionStatement() {
     const statement = new ExpressionStatement(this.currentToken);
+    console.log('this.currentToken', this.currentToken);
     const expression = this.parseExpression(Precedence.LOWEST);
 
     if (expression === null) {
@@ -140,11 +141,12 @@ export class Parser {
     const getPrefix = this.prefixParseFns[this.currentToken.type];
 
     if (getPrefix === undefined) {
+      console.log('this.currentToken', this.currentToken);
+      this.noPrefixParseFnError(this.currentToken.type);
       return null;
     }
 
-    const leftExpression = getPrefix();
-    return leftExpression;
+    return getPrefix();
   }
 
   private currentTokenIs(token: TokenType) {
@@ -175,6 +177,14 @@ export class Parser {
   }
 
   private parseIntegerLiteral() {
+    const value = parseInt(this.currentToken.literal);
+
+    if (isNaN(value)) {
+      const msg = `could not parse ${this.currentToken.literal} as integer`;
+      this.errors.push(msg);
+      return null;
+    }
+
     return new IntegerLiteral(
       this.currentToken,
       parseInt(this.currentToken.literal)
@@ -188,6 +198,7 @@ export class Parser {
     );
 
     this.nextToken();
+    console.log('expression', expression);
 
     const rightExpression = this.parseExpression(Precedence.PREFIX);
 
@@ -204,5 +215,10 @@ export class Parser {
 
   private registerInfix(tokenType: TokenType, fn: infixParseFn) {
     this.infixParseFns[tokenType] = fn;
+  }
+
+  private noPrefixParseFnError(tokenType: TokenType) {
+    const msg = `no prefix parse function for ${tokenType} found`;
+    this.errors.push(msg);
   }
 }

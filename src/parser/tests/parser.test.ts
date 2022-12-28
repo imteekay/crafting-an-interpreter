@@ -7,7 +7,7 @@ import { checkParserErrors } from './checkParserErrors';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
-    it('parses the let statement', () => {
+    it.skip('parses the let statement', () => {
       const input = `
         let x = 5;
         let y = 10;
@@ -38,7 +38,7 @@ describe('Parser', () => {
       });
     });
 
-    it('parses the return statement', () => {
+    it.skip('parses the return statement', () => {
       const input = `
         return 5;
         return 10;
@@ -85,11 +85,12 @@ describe('Parser', () => {
       ];
 
       errors.forEach((error, index) => {
+        console.log('error', error);
         expect(error).toEqual(expectedErrors[index]);
       });
     });
 
-    it('parses an identifier expression', () => {
+    it.skip('parses an identifier expression', () => {
       const input = 'foobar;';
 
       const lexer = new Lexer(input);
@@ -114,7 +115,7 @@ describe('Parser', () => {
       }
     });
 
-    it('parses an integer literal expression', () => {
+    it.skip('parses an integer literal expression', () => {
       const input = '10;';
 
       const lexer = new Lexer(input);
@@ -139,7 +140,7 @@ describe('Parser', () => {
       }
     });
 
-    it('parses prefix expressions', () => {
+    it.skip('parses prefix expressions', () => {
       type Test = {
         input: string;
         operator: string;
