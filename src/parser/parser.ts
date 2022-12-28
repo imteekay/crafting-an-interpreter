@@ -123,7 +123,6 @@ export class Parser {
 
   private parseExpressionStatement() {
     const statement = new ExpressionStatement(this.currentToken);
-    console.log('this.currentToken', this.currentToken);
     const expression = this.parseExpression(Precedence.LOWEST);
 
     if (expression === null) {
@@ -143,7 +142,6 @@ export class Parser {
     const getPrefix = this.prefixParseFns[this.currentToken.type];
 
     if (getPrefix === undefined) {
-      console.log('this.currentToken', this.currentToken);
       this.noPrefixParseFnError(this.currentToken.type);
       return null;
     }
@@ -200,7 +198,6 @@ export class Parser {
     );
 
     this.nextToken();
-    console.log('expression', expression);
 
     const rightExpression = this.parseExpression(Precedence.PREFIX);
 

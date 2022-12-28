@@ -10,6 +10,17 @@
 - functions are expressions: `(fn(x) { return x }(5) + 10 ) * 10`
 - if expressions: `let result = if (10 > 5) { true } else { false }; result // => true`
 
+terminology for expressions
+
+- A prefix operator is an operator “in front of” its operand. Example: `--5`
+- A postfix operator is an operator “after” its operand. Example: `foobar++`
+- An infix operator sits between its operands, like this: `5*8`. Infix operators appear in binary expressions - where the operator has two operands.
+- operator precedence or order of operations: which priority do different operators have.
+
+## Implementation the Pratt parser
+
+Association of parsing functions (which Pratt calls “semantic code”) with token types.
+
 ## Final words & Resources
 
 If you didn't have the opportunity, take a look at the posts from the [Building an Interpreter series](https://leandrotk.github.io/series/building-an-interpreter/):
