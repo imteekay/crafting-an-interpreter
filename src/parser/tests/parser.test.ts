@@ -7,7 +7,7 @@ import { checkParserErrors } from './checkParserErrors';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
-    it.skip('parses the let statement', () => {
+    it('parses the let statement', () => {
       const input = `
         let x = 5;
         let y = 10;
@@ -38,7 +38,7 @@ describe('Parser', () => {
       });
     });
 
-    it.skip('parses the return statement', () => {
+    it('parses the return statement', () => {
       const input = `
         return 5;
         return 10;
@@ -90,7 +90,7 @@ describe('Parser', () => {
       });
     });
 
-    it.skip('parses an identifier expression', () => {
+    it('parses an identifier expression', () => {
       const input = 'foobar;';
 
       const lexer = new Lexer(input);
@@ -104,18 +104,15 @@ describe('Parser', () => {
 
       if (
         statement.kind === StatementKind.Expression &&
-        statement.expression.kind === ExpressionKind.IntegerLiteral
+        statement.expression.kind === ExpressionKind.Identifier
       ) {
         expect(statements.length).toEqual(1);
-
-        const expression = statement.expression;
-
-        expect(expression.value).toEqual('foobar');
-        expect(expression.tokenLiteral()).toEqual('foobar');
+        expect(statement.expression.value).toEqual('foobar');
+        expect(statement.expression.tokenLiteral()).toEqual('foobar');
       }
     });
 
-    it.skip('parses an integer literal expression', () => {
+    it('parses an integer literal expression', () => {
       const input = '10;';
 
       const lexer = new Lexer(input);
@@ -140,7 +137,7 @@ describe('Parser', () => {
       }
     });
 
-    it.skip('parses prefix expressions', () => {
+    it('parses prefix expressions', () => {
       type Test = {
         input: string;
         operator: string;
