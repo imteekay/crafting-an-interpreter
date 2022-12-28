@@ -10,7 +10,7 @@
 - functions are expressions: `(fn(x) { return x }(5) + 10 ) * 10`
 - if expressions: `let result = if (10 > 5) { true } else { false }; result // => true`
 
-## **Final words & Resources**
+## Final words & Resources
 
 If you didn't have the opportunity, take a look at the posts from the [Building an Interpreter series](https://leandrotk.github.io/series/building-an-interpreter/):
 
