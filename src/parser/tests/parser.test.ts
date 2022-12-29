@@ -67,7 +67,7 @@ describe('Parser', () => {
       });
     });
 
-    it.only('parses an input with error', () => {
+    it('parses an input with error', () => {
       const input = `
         let 123;
         let a;

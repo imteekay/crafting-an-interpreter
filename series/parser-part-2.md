@@ -23,10 +23,21 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
 
 - semicolon are optional: easier to type 5 + 5 into the REPL
 - precedence: using an enum starting with the value `1` — we can see the order of operations in the enum. The bigger the value, the higher the precedence
-- prefix expressions: `<prefix operator><expression>;`
+- prefix operators: `<prefix operator><expression>;`
   - e.g. `!isGreaterThanZero(10);`
   - operator: the prefix operator
   - right: the expression after the operator
+- infix operators: `<expression> <infix operator> <expression>`
+  - because of the two expressions, it's also called binary expressions
+  - e.g.
+    - `5 + 5;`
+    - `5 - 5;`
+    - `5 * 5;`
+    - `5 / 5;`
+    - `5 > 5;`
+    - `5 < 5;`
+    - `5 == 5;`
+    - `5 != 5;`
 
 ## Final words & Resources
 
