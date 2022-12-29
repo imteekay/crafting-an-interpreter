@@ -21,6 +21,13 @@ terminology for expressions
 
 Association of parsing functions (which Pratt calls “semantic code”) with token types.
 
+- semicolon are optional: easier to type 5 + 5 into the REPL
+- precedence: using an enum starting with the value `1` — we can see the order of operations in the enum. The bigger the value, the higher the precedence
+- prefix expressions: `<prefix operator><expression>;`
+  - e.g. `!isGreaterThanZero(10);`
+  - operator: the prefix operator
+  - right: the expression after the operator
+
 ## Final words & Resources
 
 If you didn't have the opportunity, take a look at the posts from the [Building an Interpreter series](https://leandrotk.github.io/series/building-an-interpreter/):

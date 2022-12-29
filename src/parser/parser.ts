@@ -139,9 +139,10 @@ export class Parser {
   }
 
   private parseExpression(precedence: number) {
+    console.log('this.currentToken', this.currentToken);
     const getPrefix = this.prefixParseFns[this.currentToken.type];
 
-    if (getPrefix === undefined) {
+    if (!getPrefix) {
       this.noPrefixParseFnError(this.currentToken.type);
       return null;
     }

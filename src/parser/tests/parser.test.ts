@@ -67,7 +67,7 @@ describe('Parser', () => {
       });
     });
 
-    it('parses an input with error', () => {
+    it.only('parses an input with error', () => {
       const input = `
         let 123;
         let a;
@@ -82,10 +82,10 @@ describe('Parser', () => {
       const expectedErrors = [
         'expected next token to be IDENT, got INT instead',
         'expected next token to be =, got ; instead',
+        'no prefix parse function for ; found',
       ];
 
       errors.forEach((error, index) => {
-        console.log('error', error);
         expect(error).toEqual(expectedErrors[index]);
       });
     });
