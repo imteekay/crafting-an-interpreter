@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { IntegerLiteral, StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
@@ -174,6 +174,62 @@ describe('Parser', () => {
               test.integerValue.toString()
             );
           }
+        }
+      });
+    });
+
+    it.only('parses infix expressions', () => {
+      type Test = {
+        input: string;
+        leftValue: number;
+        operator: string;
+        rightValue: number;
+      };
+
+      const tests: Test[] = [
+        { input: '5 + 5;', leftValue: 5, operator: '+', rightValue: 5 },
+        { input: '5 - 5;', leftValue: 5, operator: '-', rightValue: 5 },
+        { input: '5 * 5;', leftValue: 5, operator: '*', rightValue: 5 },
+        { input: '5 / 5;', leftValue: 5, operator: '/', rightValue: 5 },
+        { input: '5 > 5;', leftValue: 5, operator: '>', rightValue: 5 },
+        { input: '5 < 5;', leftValue: 5, operator: '<', rightValue: 5 },
+        { input: '5 == 5;', leftValue: 5, operator: '==', rightValue: 5 },
+        { input: '5 != 5;', leftValue: 5, operator: '!=', rightValue: 5 },
+      ];
+
+      tests.forEach((test: Test) => {
+        const lexer = new Lexer(test.input);
+        const parser = new Parser(lexer);
+        const program = parser.parseProgram();
+        const statements = program.statements;
+        const statement = statements[0];
+        const errors = parser.getErrors();
+
+        checkParserErrors(errors);
+
+        if (statements.length !== 1) {
+          throw new Error(
+            `program does not contain 1 statement. got ${statements.length}`
+          );
+        }
+
+        if (
+          statement.kind === StatementKind.Expression &&
+          statement.expression.kind === ExpressionKind.Infix
+        ) {
+          const { expression } = statement;
+          const { operator } = expression;
+
+          const left = expression.left as IntegerLiteral;
+          const right = expression.right as IntegerLiteral;
+
+          expect(left.value).toEqual(test.leftValue);
+          expect(left.tokenLiteral()).toEqual(test.leftValue.toString());
+
+          expect(operator).toEqual(test.operator);
+
+          expect(right.value).toEqual(test.rightValue);
+          expect(right.tokenLiteral()).toEqual(test.rightValue.toString());
         }
       });
     });

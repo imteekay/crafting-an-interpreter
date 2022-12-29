@@ -8,6 +8,7 @@ import {
   ExpressionStatement,
   Expression,
 } from 'ast';
+import { InfixExpression } from 'ast/InfixExpression';
 
 import { PrefixExpression } from 'ast/PrefixExpression';
 import { Lexer } from 'lexer';
@@ -16,7 +17,7 @@ import { Token, Tokens, TokenType } from 'token';
 export type ParserError = string;
 
 type prefixParseFn = () => Expression | null;
-type infixParseFn = (expression: BaseExpression) => Expression;
+type infixParseFn = (expression: Expression) => Expression;
 
 enum Precedence {
   LOWEST = 1,
@@ -27,6 +28,18 @@ enum Precedence {
   PREFIX, // -X or !X
   CALL, // myFunction(X)
 }
+
+const precedences = new Map<TokenType, Precedence>([
+  [Tokens.EQUAL, Precedence.EQUALS],
+  [Tokens.NOT_EQUAL, Precedence.EQUALS],
+  [Tokens.LESS_THAN, Precedence.LESSGREATER],
+  [Tokens.GREATER_THAN, Precedence.LESSGREATER],
+  [Tokens.PLUS, Precedence.SUM],
+  [Tokens.MINUS, Precedence.SUM],
+  [Tokens.SLASH, Precedence.PRODUCT],
+  [Tokens.ASTERISK, Precedence.PRODUCT],
+  [Tokens.LPAREN, Precedence.CALL],
+]);
 
 export class Parser {
   private lexer: Lexer;
@@ -46,6 +59,18 @@ export class Parser {
     this.registerPrefix(Tokens.INT, this.parseIntegerLiteral.bind(this));
     this.registerPrefix(Tokens.BANG, this.parsePrefixExpression.bind(this));
     this.registerPrefix(Tokens.MINUS, this.parsePrefixExpression.bind(this));
+
+    this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.MINUS, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.SLASH, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.ASTERISK, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.EQUAL, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.NOT_EQUAL, this.parseInfixExpression.bind(this));
+    this.registerInfix(Tokens.LESS_THAN, this.parseInfixExpression.bind(this));
+    this.registerInfix(
+      Tokens.GREATER_THAN,
+      this.parseInfixExpression.bind(this)
+    );
   }
 
   nextToken() {
@@ -138,8 +163,7 @@ export class Parser {
     return statement;
   }
 
-  private parseExpression(precedence: number) {
-    console.log('this.currentToken', this.currentToken);
+  private parseExpression(precedence: Precedence) {
     const getPrefix = this.prefixParseFns[this.currentToken.type];
 
     if (!getPrefix) {
@@ -147,7 +171,26 @@ export class Parser {
       return null;
     }
 
-    return getPrefix();
+    let leftExpression = getPrefix();
+
+    while (
+      !this.peekTokenIs(Tokens.SEMICOLON) &&
+      precedence < this.peekPrecedence()
+    ) {
+      const getInfix = this.infixParseFns[this.peekToken.type];
+
+      if (!getInfix) {
+        return leftExpression;
+      }
+
+      this.nextToken();
+
+      if (leftExpression) {
+        leftExpression = getInfix(leftExpression);
+      }
+    }
+
+    return leftExpression;
   }
 
   private currentTokenIs(token: TokenType) {
@@ -209,6 +252,24 @@ export class Parser {
     return expression;
   }
 
+  private parseInfixExpression(left: Expression) {
+    const expression = new InfixExpression(
+      this.currentToken,
+      this.currentToken.literal,
+      left
+    );
+
+    const precedence = this.currentPrecedence();
+    this.nextToken();
+    const right = this.parseExpression(precedence);
+
+    if (right) {
+      expression.right = right;
+    }
+
+    return expression;
+  }
+
   private registerPrefix(tokenType: TokenType, fn: prefixParseFn) {
     this.prefixParseFns[tokenType] = fn;
   }
@@ -220,5 +281,17 @@ export class Parser {
   private noPrefixParseFnError(tokenType: TokenType) {
     const msg = `no prefix parse function for ${tokenType} found`;
     this.errors.push(msg);
+  }
+
+  private peekPrecedence() {
+    return precedences.has(this.peekToken.type)
+      ? (precedences.get(this.peekToken.type) as Precedence)
+      : Precedence.LOWEST;
+  }
+
+  private currentPrecedence() {
+    return precedences.has(this.currentToken.type)
+      ? (precedences.get(this.currentToken.type) as Precedence)
+      : Precedence.LOWEST;
   }
 }
