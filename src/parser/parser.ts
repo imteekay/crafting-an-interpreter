@@ -284,15 +284,15 @@ export class Parser {
   /** === Registering parsing functions === */
 
   /** === Precedence Handlers === */
-  private peekPrecedence() {
-    return precedences.has(this.peekToken.type)
-      ? (precedences.get(this.peekToken.type) as Precedence)
-      : Precedence.LOWEST;
-  }
-
   private currentPrecedence() {
     return precedences.has(this.currentToken.type)
       ? (precedences.get(this.currentToken.type) as Precedence)
+      : Precedence.LOWEST;
+  }
+
+  private peekPrecedence() {
+    return precedences.has(this.peekToken.type)
+      ? (precedences.get(this.peekToken.type) as Precedence)
       : Precedence.LOWEST;
   }
   /** === Precedence Handlers === */

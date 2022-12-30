@@ -38,6 +38,7 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
     - `5 < 5;`
     - `5 == 5;`
     - `5 != 5;`
+- higher precedence to be deeper in the tree than expressions with lower precedence operators.
 
 ## Final words & Resources
 
