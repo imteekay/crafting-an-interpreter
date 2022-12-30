@@ -33,6 +33,6 @@ export function startRepl() {
     });
   }
 
-  console.log('Welcome to monkey.ts');
+  console.log('Welcome');
   repl();
 }
