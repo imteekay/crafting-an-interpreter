@@ -178,7 +178,7 @@ describe('Parser', () => {
       });
     });
 
-    it.only('parses infix expressions', () => {
+    it('parses infix expressions', () => {
       type Test = {
         input: string;
         leftValue: number;
