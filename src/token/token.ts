@@ -35,6 +35,8 @@ export enum Tokens {
   RPAREN = ')',
   LBRACE = '{',
   RBRACE = '}',
+  LBRACKET = '[',
+  RBRACKET = ']',
 
   // Keywords
   FUNCTION = 'FUNCTION',

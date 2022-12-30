@@ -4,6 +4,7 @@ import { LetStatement } from 'ast/LetStatement';
 import { ReturnStatement } from 'ast/ReturnStatement';
 import { IntegerLiteral } from 'ast/IntegerLiteral';
 import { PrefixExpression } from 'ast/PrefixExpression';
+import { InfixExpression } from './InfixExpression';
 
 export enum StatementKind {
   Let = 'let',
@@ -15,6 +16,7 @@ export enum ExpressionKind {
   Identifier = 'identifier',
   IntegerLiteral = 'integerLiteral',
   Prefix = 'prefix',
+  Infix = 'infix',
 }
 
 type StatementKindType =
@@ -36,4 +38,8 @@ export interface BaseExpression extends Node {
 }
 
 export type Statement = LetStatement | ReturnStatement | ExpressionStatement;
-export type Expression = Identifier | IntegerLiteral | PrefixExpression;
+export type Expression =
+  | Identifier
+  | IntegerLiteral
+  | PrefixExpression
+  | InfixExpression;

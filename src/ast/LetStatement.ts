@@ -20,7 +20,7 @@ export class LetStatement implements BaseStatement {
   string() {
     const strings = [this.tokenLiteral(), ' ', this.name.string(), ' = '];
 
-    if (this.value !== null) {
+    if (this.value) {
       strings.push(this.value.string());
     }
 

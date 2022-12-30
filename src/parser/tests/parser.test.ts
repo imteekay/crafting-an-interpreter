@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { IntegerLiteral, StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
@@ -82,6 +82,7 @@ describe('Parser', () => {
       const expectedErrors = [
         'expected next token to be IDENT, got INT instead',
         'expected next token to be =, got ; instead',
+        'no prefix parse function for ; found',
       ];
 
       errors.forEach((error, index) => {
@@ -103,14 +104,11 @@ describe('Parser', () => {
 
       if (
         statement.kind === StatementKind.Expression &&
-        statement.expression.kind === ExpressionKind.IntegerLiteral
+        statement.expression.kind === ExpressionKind.Identifier
       ) {
         expect(statements.length).toEqual(1);
-
-        const expression = statement.expression;
-
-        expect(expression.value).toEqual('foobar');
-        expect(expression.tokenLiteral()).toEqual('foobar');
+        expect(statement.expression.value).toEqual('foobar');
+        expect(statement.expression.tokenLiteral()).toEqual('foobar');
       }
     });
 
@@ -178,6 +176,213 @@ describe('Parser', () => {
           }
         }
       });
+    });
+
+    it('parses infix expressions', () => {
+      type Test = {
+        input: string;
+        leftValue: number;
+        operator: string;
+        rightValue: number;
+      };
+
+      const tests: Test[] = [
+        { input: '5 + 5;', leftValue: 5, operator: '+', rightValue: 5 },
+        { input: '5 - 5;', leftValue: 5, operator: '-', rightValue: 5 },
+        { input: '5 * 5;', leftValue: 5, operator: '*', rightValue: 5 },
+        { input: '5 / 5;', leftValue: 5, operator: '/', rightValue: 5 },
+        { input: '5 > 5;', leftValue: 5, operator: '>', rightValue: 5 },
+        { input: '5 < 5;', leftValue: 5, operator: '<', rightValue: 5 },
+        { input: '5 == 5;', leftValue: 5, operator: '==', rightValue: 5 },
+        { input: '5 != 5;', leftValue: 5, operator: '!=', rightValue: 5 },
+      ];
+
+      tests.forEach((test: Test) => {
+        const lexer = new Lexer(test.input);
+        const parser = new Parser(lexer);
+        const program = parser.parseProgram();
+        const statements = program.statements;
+        const statement = statements[0];
+        const errors = parser.getErrors();
+
+        checkParserErrors(errors);
+
+        if (statements.length !== 1) {
+          throw new Error(
+            `program does not contain 1 statement. got ${statements.length}`
+          );
+        }
+
+        if (
+          statement.kind === StatementKind.Expression &&
+          statement.expression.kind === ExpressionKind.Infix
+        ) {
+          const { expression } = statement;
+          const { operator } = expression;
+
+          const left = expression.left as IntegerLiteral;
+          const right = expression.right as IntegerLiteral;
+
+          expect(left.value).toEqual(test.leftValue);
+          expect(left.tokenLiteral()).toEqual(test.leftValue.toString());
+
+          expect(operator).toEqual(test.operator);
+
+          expect(right.value).toEqual(test.rightValue);
+          expect(right.tokenLiteral()).toEqual(test.rightValue.toString());
+        }
+      });
+    });
+  });
+
+  it('parses infix expressions with operator precedence', () => {
+    type Test = {
+      input: string;
+      expected: string;
+    };
+
+    const tests: Test[] = [
+      { input: '-a * b', expected: '((-a) * b)' },
+      { input: '!-a', expected: '(!(-a))' },
+      { input: 'a + b + c', expected: '((a + b) + c)' },
+      { input: 'a + b - c', expected: '((a + b) - c)' },
+      { input: 'a * b * c', expected: '((a * b) * c)' },
+      { input: 'a * b / c', expected: '((a * b) / c)' },
+      { input: 'a + b / c', expected: '(a + (b / c))' },
+      {
+        input: 'a + b * c + d / e - f',
+        expected: '(((a + (b * c)) + (d / e)) - f)',
+      },
+      { input: '3 + 4; -5 * 5', expected: '(3 + 4)((-5) * 5)' },
+      { input: '5 > 4 == 3 < 4', expected: '((5 > 4) == (3 < 4))' },
+      { input: '5 < 4 != 3 > 4', expected: '((5 < 4) != (3 > 4))' },
+      {
+        input: '3 + 4 * 5 == 3 * 1 + 4 * 5',
+        expected: '((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))',
+      },
+    ];
+
+    tests.forEach((test: Test) => {
+      const lexer = new Lexer(test.input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+      const errors = parser.getErrors();
+      checkParserErrors(errors);
+      expect(program.string()).toEqual(test.expected);
+    });
+  });
+
+  it('parses two infix expressions', () => {
+    const input = '1 + 2 + 3';
+    const lexer = new Lexer(input);
+    const parser = new Parser(lexer);
+    const program = parser.parseProgram();
+    const errors = parser.getErrors();
+
+    checkParserErrors(errors);
+    expect(program.statements[0]).toEqual({
+      token: {
+        type: 'INT',
+        literal: '1',
+      },
+      kind: 'expression',
+      expression: {
+        token: {
+          type: '+',
+          literal: '+',
+        },
+        operator: '+',
+        left: {
+          token: {
+            type: '+',
+            literal: '+',
+          },
+          operator: '+',
+          left: {
+            token: {
+              type: 'INT',
+              literal: '1',
+            },
+            value: 1,
+            kind: 'integerLiteral',
+          },
+          kind: 'infix',
+          right: {
+            token: {
+              type: 'INT',
+              literal: '2',
+            },
+            value: 2,
+            kind: 'integerLiteral',
+          },
+        },
+        kind: 'infix',
+        right: {
+          token: {
+            type: 'INT',
+            literal: '3',
+          },
+          value: 3,
+          kind: 'integerLiteral',
+        },
+      },
+    });
+  });
+
+  it('parses two infix expressions with different precedences', () => {
+    const input = '1 + 2 * 3';
+    const lexer = new Lexer(input);
+    const parser = new Parser(lexer);
+    const program = parser.parseProgram();
+    const errors = parser.getErrors();
+
+    checkParserErrors(errors);
+    expect(program.statements[0]).toEqual({
+      token: {
+        type: 'INT',
+        literal: '1',
+      },
+      kind: 'expression',
+      expression: {
+        token: {
+          type: '+',
+          literal: '+',
+        },
+        operator: '+',
+        left: {
+          token: {
+            type: 'INT',
+            literal: '1',
+          },
+          value: 1,
+          kind: 'integerLiteral',
+        },
+        kind: 'infix',
+        right: {
+          token: {
+            type: '*',
+            literal: '*',
+          },
+          operator: '*',
+          kind: 'infix',
+          left: {
+            token: {
+              type: 'INT',
+              literal: '2',
+            },
+            value: 2,
+            kind: 'integerLiteral',
+          },
+          right: {
+            token: {
+              type: 'INT',
+              literal: '3',
+            },
+            value: 3,
+            kind: 'integerLiteral',
+          },
+        },
+      },
     });
   });
 });

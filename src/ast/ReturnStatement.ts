@@ -18,7 +18,7 @@ export class ReturnStatement implements BaseStatement {
   string() {
     const strings = [this.tokenLiteral(), ' '];
 
-    if (this.returnValue !== null) {
+    if (this.returnValue) {
       strings.push(this.returnValue.string());
     }
 
