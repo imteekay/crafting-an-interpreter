@@ -1,6 +1,5 @@
 import {
   Program,
-  BaseExpression,
   LetStatement,
   Identifier,
   IntegerLiteral,

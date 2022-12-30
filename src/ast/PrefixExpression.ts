@@ -18,6 +18,6 @@ export class PrefixExpression implements BaseExpression {
   }
 
   string(): string {
-    return ['(', this.operator, this.right.string(), ')'].join('');
+    return `(${this.operator}${this.right.string()})`;
   }
 }

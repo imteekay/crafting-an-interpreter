@@ -20,6 +20,6 @@ export class InfixExpression implements BaseExpression {
   }
 
   string(): string {
-    return `(${this.left.string()}${this.operator}${this.right.string()})`;
+    return `(${this.left.string()} ${this.operator} ${this.right.string()})`;
   }
 }
