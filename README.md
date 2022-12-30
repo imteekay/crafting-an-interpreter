@@ -1,6 +1,6 @@
-# Monkey TS
+# Crafting an Interpreter
 
-The Monkey programming language's compiler written in TypeScript.
+Crafting an interpreter/compiler with TypeScript.
 
 ## Series
 
