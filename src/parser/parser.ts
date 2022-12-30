@@ -54,11 +54,13 @@ export class Parser {
     this.nextToken();
     this.nextToken();
 
+    // Parsing prefix expressions
     this.registerPrefix(Tokens.IDENT, this.parseIdentifier.bind(this));
     this.registerPrefix(Tokens.INT, this.parseIntegerLiteral.bind(this));
     this.registerPrefix(Tokens.BANG, this.parsePrefixExpression.bind(this));
     this.registerPrefix(Tokens.MINUS, this.parsePrefixExpression.bind(this));
 
+    // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
     this.registerInfix(Tokens.MINUS, this.parseInfixExpression.bind(this));
     this.registerInfix(Tokens.SLASH, this.parseInfixExpression.bind(this));
@@ -98,6 +100,7 @@ export class Parser {
     return this.errors;
   }
 
+  /** === Parsing Statements === */
   private parseStatement() {
     switch (this.currentToken.type) {
       case Tokens.LET:
@@ -161,7 +164,9 @@ export class Parser {
 
     return statement;
   }
+  /** === Parsing Statements === */
 
+  /** === Parsing Expressions === */
   private parseExpression(precedence: Precedence) {
     const getPrefix = this.prefixParseFns[this.currentToken.type];
 
@@ -191,7 +196,9 @@ export class Parser {
 
     return leftExpression;
   }
+  /** === Parsing Expressions === */
 
+  /** === Token Handler === */
   private currentTokenIs(token: TokenType) {
     return this.currentToken.type === token;
   }
@@ -209,12 +216,9 @@ export class Parser {
     this.peekError(token);
     return false;
   }
+  /** === Token Handler === */
 
-  private peekError(token: TokenType) {
-    const msg = `expected next token to be ${token}, got ${this.peekToken.type} instead`;
-    this.errors.push(msg);
-  }
-
+  /** === Parsing Functions === */
   private parseIdentifier() {
     return new Identifier(this.currentToken, this.currentToken.literal);
   }
@@ -268,7 +272,9 @@ export class Parser {
 
     return expression;
   }
+  /** === Parsing Functions === */
 
+  /** === Registering parsing functions === */
   private registerPrefix(tokenType: TokenType, fn: prefixParseFn) {
     this.prefixParseFns[tokenType] = fn;
   }
@@ -276,12 +282,9 @@ export class Parser {
   private registerInfix(tokenType: TokenType, fn: infixParseFn) {
     this.infixParseFns[tokenType] = fn;
   }
+  /** === Registering parsing functions === */
 
-  private noPrefixParseFnError(tokenType: TokenType) {
-    const msg = `no prefix parse function for ${tokenType} found`;
-    this.errors.push(msg);
-  }
-
+  /** === Precedence Handlers === */
   private peekPrecedence() {
     return precedences.has(this.peekToken.type)
       ? (precedences.get(this.peekToken.type) as Precedence)
@@ -293,4 +296,17 @@ export class Parser {
       ? (precedences.get(this.currentToken.type) as Precedence)
       : Precedence.LOWEST;
   }
+  /** === Precedence Handlers === */
+
+  /** === Error Handling === */
+  private peekError(token: TokenType) {
+    const msg = `expected next token to be ${token}, got ${this.peekToken.type} instead`;
+    this.errors.push(msg);
+  }
+
+  private noPrefixParseFnError(tokenType: TokenType) {
+    const msg = `no prefix parse function for ${tokenType} found`;
+    this.errors.push(msg);
+  }
+  /** === Error Handling === */
 }
