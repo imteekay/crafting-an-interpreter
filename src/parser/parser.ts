@@ -1,3 +1,5 @@
+import { Lexer } from 'lexer';
+import { Token, Tokens, TokenType } from 'token';
 import {
   Program,
   LetStatement,
@@ -6,12 +8,9 @@ import {
   ReturnStatement,
   ExpressionStatement,
   Expression,
+  InfixExpression,
+  PrefixExpression,
 } from 'ast';
-import { InfixExpression } from 'ast/InfixExpression';
-
-import { PrefixExpression } from 'ast/PrefixExpression';
-import { Lexer } from 'lexer';
-import { Token, Tokens, TokenType } from 'token';
 
 export type ParserError = string;
 
