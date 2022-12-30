@@ -1,6 +1,6 @@
-# Monkey TS
+# Crafting an Interpreter
 
-The Monkey programming language's compiler written in TypeScript.
+Crafting an interpreter/compiler with TypeScript.
 
 ## Series
 
@@ -13,7 +13,7 @@ The Monkey programming language's compiler written in TypeScript.
 
 ## Series on markdown
 
-- [Series on markdown](https://github.com/leandrotk/monkey-ts/tree/main/series)
+- [Series on markdown](https://github.com/imteekay/crafting-an-interpreter/tree/main/series)
 - [Lexical Analysis - Part 1](series/lexical-analysis-part-1.md)
 - [Lexical Analysis - Part 2](series/lexical-analysis-part-2.md)
 - [Lexical Analysis - Part 3](series/lexical-analysis-part-3.md)

@@ -8,7 +8,7 @@ But instead of Go, I wanted to use a language I'm most familiar nowadays. So Typ
 
 This book creates an interpreter for the Monkey programming language and we'll see in each chapter of this series the building blocks of the interpreter.
 
-If you want to see the code, I have a public Github repository for this implementation: [monkey-ts](https://github.com/leandrotk/monkey-ts), the Monkey programming language's compiler written in TypeScript.
+If you want to see the code, I have a public Github repository for this implementation: [crafting-an-interpreter](https://github.com/imteekay/crafting-an-interpreter), a programming language's compiler written in TypeScript.
 
 - [Lexical Analysis - Part 1](lexical-analysis-part-1.md)
 - [Lexical Analysis - Part 2](lexical-analysis-part-2.md)

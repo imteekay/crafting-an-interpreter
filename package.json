@@ -1,7 +1,7 @@
 {
-  "name": "monkey-ts",
+  "name": "crafting-an-interpreter",
   "version": "1.0.0",
-  "description": "The Monkey programming language's compiler written in TypeScript.",
+  "description": "Crafting an interpreter/compiler with TypeScript",
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/imteekay/monkey-ts.git"
+    "url": "git+ssh://git@github.com/imteekay/crafting-an-interpreter.git"
   },
   "keywords": [
     "compiler",
@@ -25,9 +25,9 @@
   "author": "=",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/imteekay/monkey-ts/issues"
+    "url": "https://github.com/imteekay/mocrafting-an-interpreter/issues"
   },
-  "homepage": "https://github.com/imteekay/monkey-ts",
+  "homepage": "https://github.com/imteekay/mocrafting-an-interpreter",
   "devDependencies": {
     "@types/node": "15.3.0",
     "@typescript-eslint/eslint-plugin": "4.23.0",
