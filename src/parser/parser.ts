@@ -149,7 +149,7 @@ export class Parser {
     const statement = new ExpressionStatement(this.currentToken);
     const expression = this.parseExpression(Precedence.LOWEST);
 
-    if (expression === null) {
+    if (!expression) {
       return null;
     }
 
