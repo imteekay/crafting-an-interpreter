@@ -271,4 +271,61 @@ describe('Parser', () => {
       expect(program.string()).toEqual(test.expected);
     });
   });
+
+  it('parses two infix expressions', () => {
+    const input = '1 + 2 + 3';
+    const lexer = new Lexer(input);
+    const parser = new Parser(lexer);
+    const program = parser.parseProgram();
+    const errors = parser.getErrors();
+
+    checkParserErrors(errors);
+    expect(program.statements[0]).toEqual({
+      token: {
+        type: 'INT',
+        literal: '1',
+      },
+      kind: 'expression',
+      expression: {
+        token: {
+          type: '+',
+          literal: '+',
+        },
+        operator: '+',
+        left: {
+          token: {
+            type: '+',
+            literal: '+',
+          },
+          operator: '+',
+          left: {
+            token: {
+              type: 'INT',
+              literal: '1',
+            },
+            value: 1,
+            kind: 'integerLiteral',
+          },
+          kind: 'infix',
+          right: {
+            token: {
+              type: 'INT',
+              literal: '2',
+            },
+            value: 2,
+            kind: 'integerLiteral',
+          },
+        },
+        kind: 'infix',
+        right: {
+          token: {
+            type: 'INT',
+            literal: '3',
+          },
+          value: 3,
+          kind: 'integerLiteral',
+        },
+      },
+    });
+  });
 });
