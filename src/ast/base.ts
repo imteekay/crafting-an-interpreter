@@ -17,6 +17,7 @@ export enum ExpressionKind {
   IntegerLiteral = 'integerLiteral',
   Prefix = 'prefix',
   Infix = 'infix',
+  Boolean = 'boolean',
 }
 
 type StatementKindType =
