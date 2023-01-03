@@ -137,6 +137,27 @@ describe('Parser', () => {
       }
     });
 
+    it('parses boolean expression', () => {
+      const input = 'true;';
+
+      const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+      const statements = program.statements;
+      const errors = parser.getErrors();
+      const statement = statements[0];
+
+      checkParserErrors(errors);
+
+      if (
+        statement.kind === StatementKind.Expression &&
+        statement.expression.kind === ExpressionKind.Boolean
+      ) {
+        expect(statement.expression.value).toEqual(true);
+        expect(statement.expression.tokenLiteral()).toEqual('true');
+      }
+    });
+
     it('parses prefix expressions', () => {
       type Test = {
         input: string;

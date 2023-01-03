@@ -1,7 +1,7 @@
 import { BaseExpression, ExpressionKind } from 'ast/base';
 import { Token } from 'token';
 
-export class Boolean implements BaseExpression {
+export class BooleanExpression implements BaseExpression {
   token: Token;
   value: boolean;
   kind: ExpressionKind.Boolean;
