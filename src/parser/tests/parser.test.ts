@@ -201,12 +201,14 @@ describe('Parser', () => {
       type Test = {
         input: string;
         operator: string;
-        integerValue: number;
+        value: number | boolean;
       };
 
       const tests: Test[] = [
-        { input: '!5;', operator: '!', integerValue: 5 },
-        { input: '-15;', operator: '-', integerValue: 15 },
+        { input: '!5;', operator: '!', value: 5 },
+        { input: '-15;', operator: '-', value: 15 },
+        { input: '!true', operator: '!', value: true },
+        { input: '!false', operator: '!', value: false },
       ];
 
       tests.forEach((test: Test) => {
@@ -229,9 +231,9 @@ describe('Parser', () => {
           expect(expression.operator).toEqual(test.operator);
 
           if (rightExpression.kind == ExpressionKind.IntegerLiteral) {
-            expect(rightExpression.value).toEqual(test.integerValue);
+            expect(rightExpression.value).toEqual(test.value);
             expect(rightExpression.tokenLiteral()).toEqual(
-              test.integerValue.toString()
+              test.value.toString()
             );
           }
         }
