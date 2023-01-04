@@ -137,16 +137,78 @@ describe('Parser', () => {
       }
     });
 
+    it('parses boolean expression', () => {
+      const input = `
+        true;
+        false;
+      `;
+
+      const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
+      const errors = parser.getErrors();
+
+      checkParserErrors(errors);
+
+      const tests = [
+        { value: true, valueString: 'true' },
+        { value: false, valueString: 'false' },
+      ];
+
+      tests.forEach(({ value, valueString }, index) => {
+        const statement = program.statements[index];
+
+        if (
+          statement.kind === StatementKind.Expression &&
+          statement.expression.kind === ExpressionKind.Boolean
+        ) {
+          expect(statement.expression.value).toEqual(value);
+          expect(statement.expression.tokenLiteral()).toEqual(valueString);
+        }
+      });
+    });
+
+    it('parses operator precedence', () => {
+      const tests = [
+        {
+          input: 'true',
+          expected: 'true',
+        },
+        {
+          input: 'false',
+          expected: 'false',
+        },
+        {
+          input: '3 > 5 == false',
+          expected: '((3 > 5) == false)',
+        },
+        {
+          input: '3 < 5 == true',
+          expected: '((3 < 5) == true)',
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const lexer = new Lexer(input);
+        const parser = new Parser(lexer);
+        const program = parser.parseProgram();
+
+        expect(program.string()).equal(expected);
+      }
+    });
+
     it('parses prefix expressions', () => {
       type Test = {
         input: string;
         operator: string;
-        integerValue: number;
+        value: number | boolean;
       };
 
       const tests: Test[] = [
-        { input: '!5;', operator: '!', integerValue: 5 },
-        { input: '-15;', operator: '-', integerValue: 15 },
+        { input: '!5;', operator: '!', value: 5 },
+        { input: '-15;', operator: '-', value: 15 },
+        { input: '!true', operator: '!', value: true },
+        { input: '!false', operator: '!', value: false },
       ];
 
       tests.forEach((test: Test) => {
@@ -169,9 +231,9 @@ describe('Parser', () => {
           expect(expression.operator).toEqual(test.operator);
 
           if (rightExpression.kind == ExpressionKind.IntegerLiteral) {
-            expect(rightExpression.value).toEqual(test.integerValue);
+            expect(rightExpression.value).toEqual(test.value);
             expect(rightExpression.tokenLiteral()).toEqual(
-              test.integerValue.toString()
+              test.value.toString()
             );
           }
         }

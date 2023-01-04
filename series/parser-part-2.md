@@ -39,6 +39,12 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
     - `5 == 5;`
     - `5 != 5;`
 - higher precedence to be deeper in the tree than expressions with lower precedence operators.
+- boolean literals
+  - e.g.
+    - `true;`
+    - `false;`
+    - `let foobar = true;`
+    - `let barfoo = false;`
 
 ## Final words & Resources
 

@@ -11,6 +11,7 @@ import {
   InfixExpression,
   PrefixExpression,
 } from 'ast';
+import { BooleanExpression } from 'ast/Boolean';
 
 export type ParserError = string;
 
@@ -58,6 +59,8 @@ export class Parser {
     this.registerPrefix(Tokens.INT, this.parseIntegerLiteral.bind(this));
     this.registerPrefix(Tokens.BANG, this.parsePrefixExpression.bind(this));
     this.registerPrefix(Tokens.MINUS, this.parsePrefixExpression.bind(this));
+    this.registerPrefix(Tokens.TRUE, this.parseBoolean.bind(this));
+    this.registerPrefix(Tokens.FALSE, this.parseBoolean.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -234,6 +237,13 @@ export class Parser {
     return new IntegerLiteral(
       this.currentToken,
       parseInt(this.currentToken.literal)
+    );
+  }
+
+  private parseBoolean() {
+    return new BooleanExpression(
+      this.currentToken,
+      this.currentTokenIs(Tokens.TRUE)
     );
   }
 
