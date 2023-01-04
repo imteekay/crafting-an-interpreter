@@ -168,6 +168,35 @@ describe('Parser', () => {
       });
     });
 
+    it('parses operator precedence', () => {
+      const tests = [
+        {
+          input: 'true',
+          expected: 'true',
+        },
+        {
+          input: 'false',
+          expected: 'false',
+        },
+        {
+          input: '3 > 5 == false',
+          expected: '((3 > 5) == false)',
+        },
+        {
+          input: '3 < 5 == true',
+          expected: '((3 < 5) == true)',
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const lexer = new Lexer(input);
+        const parser = new Parser(lexer);
+        const program = parser.parseProgram();
+
+        expect(program.string()).equal(expected);
+      }
+    });
+
     it('parses prefix expressions', () => {
       type Test = {
         input: string;
