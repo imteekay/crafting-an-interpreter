@@ -10,8 +10,8 @@ import {
   Expression,
   InfixExpression,
   PrefixExpression,
+  BooleanExpression,
 } from 'ast';
-import { BooleanExpression } from 'ast/Boolean';
 
 export type ParserError = string;
 
@@ -61,6 +61,7 @@ export class Parser {
     this.registerPrefix(Tokens.MINUS, this.parsePrefixExpression.bind(this));
     this.registerPrefix(Tokens.TRUE, this.parseBoolean.bind(this));
     this.registerPrefix(Tokens.FALSE, this.parseBoolean.bind(this));
+    this.registerPrefix(Tokens.LPAREN, this.parseGroupedExpression.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -277,6 +278,18 @@ export class Parser {
 
     if (right) {
       expression.right = right;
+    }
+
+    return expression;
+  }
+
+  private parseGroupedExpression() {
+    this.nextToken();
+
+    const expression = this.parseExpression(Precedence.LOWEST);
+
+    if (!this.expectPeek(Tokens.RPAREN)) {
+      return null;
     }
 
     return expression;

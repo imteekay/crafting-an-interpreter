@@ -322,6 +322,23 @@ describe('Parser', () => {
         input: '3 + 4 * 5 == 3 * 1 + 4 * 5',
         expected: '((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))',
       },
+      {
+        input: '1 + (2 + 3) + 4',
+        expected: '((1 + (2 + 3)) + 4)',
+      },
+      { input: '(5 + 5) * 2', expected: '((5 + 5) * 2)' },
+      {
+        input: '2 / (5 + 5)',
+        expected: '(2 / (5 + 5))',
+      },
+      {
+        input: '-(5 + 5)',
+        expected: '(-(5 + 5))',
+      },
+      {
+        input: '!(true == true)',
+        expected: '(!(true == true))',
+      },
     ];
 
     tests.forEach((test: Test) => {

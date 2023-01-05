@@ -13,3 +13,4 @@ export { ExpressionStatement } from 'ast/ExpressionStatement';
 export { IntegerLiteral } from 'ast/IntegerLiteral';
 export { PrefixExpression } from 'ast/PrefixExpression';
 export { InfixExpression } from 'ast/InfixExpression';
+export { BooleanExpression } from 'ast/Boolean';
