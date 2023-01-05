@@ -1,35 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
-import { Lexer } from 'lexer';
-import { Parser } from 'parser';
-import { checkParserErrors } from './checkParserErrors';
+import { parse } from './parse';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
     it('parses prefix expressions', () => {
-      type Test = {
-        input: string;
-        operator: string;
-        value: number | boolean;
-      };
-
-      const tests: Test[] = [
+      const tests = [
         { input: '!5;', operator: '!', value: 5 },
         { input: '-15;', operator: '-', value: 15 },
         { input: '!true', operator: '!', value: true },
         { input: '!false', operator: '!', value: false },
       ];
 
-      tests.forEach((test: Test) => {
-        const lexer = new Lexer(test.input);
-        const parser = new Parser(lexer);
-        const program = parser.parseProgram();
-        const statements = program.statements;
-        const errors = parser.getErrors();
+      tests.forEach((test) => {
+        const { statements } = parse(test.input);
         const statement = statements[0];
-
-        checkParserErrors(errors);
 
         if (
           statement.kind === StatementKind.Expression &&

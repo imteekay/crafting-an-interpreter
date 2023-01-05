@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { StatementKind } from 'ast';
-import { Lexer } from 'lexer';
-import { Parser } from 'parser';
-import { checkParserErrors } from './checkParserErrors';
+import { parse } from './parse';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -13,13 +11,7 @@ describe('Parser', () => {
         return 10000;
       `;
 
-      const lexer = new Lexer(input);
-      const parser = new Parser(lexer);
-      const program = parser.parseProgram();
-      const errors = parser.getErrors();
-
-      checkParserErrors(errors);
-
+      const { statements } = parse(input);
       const tests = [
         { tokenLiteral: 'return' },
         { tokenLiteral: 'return' },
@@ -27,7 +19,7 @@ describe('Parser', () => {
       ];
 
       tests.forEach(({ tokenLiteral }, index) => {
-        const statement = program.statements[index];
+        const statement = statements[index];
 
         if (statement.kind === StatementKind.Return) {
           expect(statement.tokenLiteral()).toEqual(tokenLiteral);

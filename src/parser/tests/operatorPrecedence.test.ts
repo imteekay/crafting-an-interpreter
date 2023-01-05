@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Lexer } from 'lexer';
-import { Parser } from 'parser';
+import { parse } from './parse';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -60,11 +59,8 @@ describe('Parser', () => {
       ];
 
       for (const { input, expected } of tests) {
-        const lexer = new Lexer(input);
-        const parser = new Parser(lexer);
-        const program = parser.parseProgram();
-
-        expect(program.string()).equal(expected);
+        const { programString } = parse(input);
+        expect(programString).equal(expected);
       }
     });
   });

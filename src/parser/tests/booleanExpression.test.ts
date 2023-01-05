@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
-import { Lexer } from 'lexer';
-import { Parser } from 'parser';
 import { checkParserErrors } from './checkParserErrors';
+import { parse } from './parse';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -13,20 +12,14 @@ describe('Parser', () => {
         false;
       `;
 
-      const lexer = new Lexer(input);
-      const parser = new Parser(lexer);
-      const program = parser.parseProgram();
-      const errors = parser.getErrors();
-
-      checkParserErrors(errors);
-
+      const { statements } = parse(input);
       const tests = [
         { value: true, valueString: 'true' },
         { value: false, valueString: 'false' },
       ];
 
       tests.forEach(({ value, valueString }, index) => {
-        const statement = program.statements[index];
+        const statement = statements[index];
 
         if (
           statement.kind === StatementKind.Expression &&

@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { IntegerLiteral, StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
-import { Lexer } from 'lexer';
-import { Parser } from 'parser';
-import { checkParserErrors } from './checkParserErrors';
+import { parse } from './parse';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -20,14 +18,8 @@ describe('Parser', () => {
       ];
 
       tests.forEach((test) => {
-        const lexer = new Lexer(test.input);
-        const parser = new Parser(lexer);
-        const program = parser.parseProgram();
-        const statements = program.statements;
+        const { statements } = parse(test.input);
         const statement = statements[0];
-        const errors = parser.getErrors();
-
-        checkParserErrors(errors);
 
         if (statements.length !== 1) {
           throw new Error(
@@ -59,25 +51,71 @@ describe('Parser', () => {
 
   it('parses two infix expressions', () => {
     const input = '1 + 2 + 3';
-    const lexer = new Lexer(input);
-    const parser = new Parser(lexer);
-    const program = parser.parseProgram();
-    const errors = parser.getErrors();
+    const { statements } = parse(input);
 
-    checkParserErrors(errors);
-    expect(program.statements[0]).toEqual({
-      token: {
-        type: 'INT',
-        literal: '1',
-      },
-      kind: 'expression',
-      expression: {
+    expect(statements).toEqual([
+      {
         token: {
-          type: '+',
-          literal: '+',
+          type: 'INT',
+          literal: '1',
         },
-        operator: '+',
-        left: {
+        kind: 'expression',
+        expression: {
+          token: {
+            type: '+',
+            literal: '+',
+          },
+          operator: '+',
+          left: {
+            token: {
+              type: '+',
+              literal: '+',
+            },
+            operator: '+',
+            left: {
+              token: {
+                type: 'INT',
+                literal: '1',
+              },
+              value: 1,
+              kind: 'integerLiteral',
+            },
+            kind: 'infix',
+            right: {
+              token: {
+                type: 'INT',
+                literal: '2',
+              },
+              value: 2,
+              kind: 'integerLiteral',
+            },
+          },
+          kind: 'infix',
+          right: {
+            token: {
+              type: 'INT',
+              literal: '3',
+            },
+            value: 3,
+            kind: 'integerLiteral',
+          },
+        },
+      },
+    ]);
+  });
+
+  it('parses two infix expressions with different precedences', () => {
+    const input = '1 + 2 * 3';
+    const { statements } = parse(input);
+
+    expect(statements).toEqual([
+      {
+        token: {
+          type: 'INT',
+          literal: '1',
+        },
+        kind: 'expression',
+        expression: {
           token: {
             type: '+',
             literal: '+',
@@ -94,80 +132,30 @@ describe('Parser', () => {
           kind: 'infix',
           right: {
             token: {
-              type: 'INT',
-              literal: '2',
+              type: '*',
+              literal: '*',
             },
-            value: 2,
-            kind: 'integerLiteral',
-          },
-        },
-        kind: 'infix',
-        right: {
-          token: {
-            type: 'INT',
-            literal: '3',
-          },
-          value: 3,
-          kind: 'integerLiteral',
-        },
-      },
-    });
-  });
-
-  it('parses two infix expressions with different precedences', () => {
-    const input = '1 + 2 * 3';
-    const lexer = new Lexer(input);
-    const parser = new Parser(lexer);
-    const program = parser.parseProgram();
-    const errors = parser.getErrors();
-
-    checkParserErrors(errors);
-    expect(program.statements[0]).toEqual({
-      token: {
-        type: 'INT',
-        literal: '1',
-      },
-      kind: 'expression',
-      expression: {
-        token: {
-          type: '+',
-          literal: '+',
-        },
-        operator: '+',
-        left: {
-          token: {
-            type: 'INT',
-            literal: '1',
-          },
-          value: 1,
-          kind: 'integerLiteral',
-        },
-        kind: 'infix',
-        right: {
-          token: {
-            type: '*',
-            literal: '*',
-          },
-          operator: '*',
-          kind: 'infix',
-          left: {
-            token: {
-              type: 'INT',
-              literal: '2',
+            operator: '*',
+            kind: 'infix',
+            left: {
+              token: {
+                type: 'INT',
+                literal: '2',
+              },
+              value: 2,
+              kind: 'integerLiteral',
             },
-            value: 2,
-            kind: 'integerLiteral',
-          },
-          right: {
-            token: {
-              type: 'INT',
-              literal: '3',
+            right: {
+              token: {
+                type: 'INT',
+                literal: '3',
+              },
+              value: 3,
+              kind: 'integerLiteral',
             },
-            value: 3,
-            kind: 'integerLiteral',
           },
         },
       },
-    });
+    ]);
   });
 });
