@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { StatementKind, BooleanExpression } from 'ast';
 import { ExpressionKind } from 'ast/base';
-import { checkParserErrors } from './checkParserErrors';
+import { Token, Tokens } from 'token';
 import { parse } from './parse';
 
 describe('Parser', () => {
@@ -29,6 +29,22 @@ describe('Parser', () => {
           expect(statement.expression.tokenLiteral()).toEqual(valueString);
         }
       });
+
+      const trueToken = new Token(Tokens.TRUE, 'true');
+      const falseToken = new Token(Tokens.FALSE, 'false');
+
+      expect(statements).toEqual([
+        {
+          token: trueToken,
+          kind: StatementKind.Expression,
+          expression: new BooleanExpression(trueToken, true),
+        },
+        {
+          token: falseToken,
+          kind: 'expression',
+          expression: new BooleanExpression(falseToken, false),
+        },
+      ]);
     });
   });
 });
