@@ -45,6 +45,10 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
     - `false;`
     - `let foobar = true;`
     - `let barfoo = false;`
+- grouped expressions
+  - e.g.
+    - `1 + (2 + 3) + 4`
+    - `(5 + 5) * 2`
 
 ## Final words & Resources
 
