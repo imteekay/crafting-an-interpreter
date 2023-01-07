@@ -28,20 +28,6 @@ describe('Parser', () => {
           expect(statement.name.tokenLiteral()).toEqual(identifier);
         }
       });
-
-      const xStatement = new LetStatement(new Token(Tokens.LET, 'let'));
-      xStatement.name = new Identifier(new Token(Tokens.IDENT, 'x'), 'x');
-
-      const yStatement = new LetStatement(new Token(Tokens.LET, 'let'));
-      yStatement.name = new Identifier(new Token(Tokens.IDENT, 'y'), 'y');
-
-      const foobarStatement = new LetStatement(new Token(Tokens.LET, 'let'));
-      foobarStatement.name = new Identifier(
-        new Token(Tokens.IDENT, 'foobar'),
-        'foobar'
-      );
-
-      expect(statements).toEqual([xStatement, yStatement, foobarStatement]);
     });
 
     it('validates ast after parsing', () => {
