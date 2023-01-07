@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { ReturnStatement, StatementKind } from 'ast';
 import { parse } from './parse';
+import { Token, Tokens } from 'token';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -25,6 +26,17 @@ describe('Parser', () => {
           expect(statement.tokenLiteral()).toEqual(tokenLiteral);
         }
       });
+    });
+
+    it('validates ast after parsing', () => {
+      const input = 'return 10;';
+      const { statements } = parse(input);
+
+      const returnStatement = new ReturnStatement(
+        new Token(Tokens.RETURN, 'return')
+      );
+
+      expect(statements).toEqual([returnStatement]);
     });
   });
 });
