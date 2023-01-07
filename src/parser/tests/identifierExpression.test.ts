@@ -19,7 +19,11 @@ describe('Parser', () => {
         expect(statement.expression.value).toEqual('foobar');
         expect(statement.expression.tokenLiteral()).toEqual('foobar');
       }
+    });
 
+    it('validates ast after parsing', () => {
+      const input = 'foobar';
+      const { statements } = parse(input);
       const identifierToken = new Token(Tokens.IDENT, 'foobar');
       const expressionStatement = new ExpressionStatement(identifierToken);
       expressionStatement.expression = new Identifier(

@@ -22,7 +22,11 @@ describe('Parser', () => {
         expect(expression.value).toEqual(10);
         expect(expression.tokenLiteral()).toEqual('10');
       }
+    });
 
+    it('validates ast after parsing', () => {
+      const input = '10;';
+      const { statements } = parse(input);
       const integerToken = new Token(Tokens.INT, '10');
       const expressionStatement = new ExpressionStatement(integerToken);
       expressionStatement.expression = new IntegerLiteral(integerToken, 10);

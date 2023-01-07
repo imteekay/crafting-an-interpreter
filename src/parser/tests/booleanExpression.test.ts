@@ -29,7 +29,15 @@ describe('Parser', () => {
           expect(statement.expression.tokenLiteral()).toEqual(valueString);
         }
       });
+    });
 
+    it('validates ast after parsing', () => {
+      const input = `
+        true;
+        false;
+      `;
+
+      const { statements } = parse(input);
       const trueToken = new Token(Tokens.TRUE, 'true');
       const falseToken = new Token(Tokens.FALSE, 'false');
 

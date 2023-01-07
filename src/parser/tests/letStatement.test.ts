@@ -43,5 +43,29 @@ describe('Parser', () => {
 
       expect(statements).toEqual([xStatement, yStatement, foobarStatement]);
     });
+
+    it('validates ast after parsing', () => {
+      const input = `
+        let x = 5;
+        let y = 10;
+        let foobar = 10000;
+      `;
+
+      const { statements } = parse(input);
+
+      const xStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      xStatement.name = new Identifier(new Token(Tokens.IDENT, 'x'), 'x');
+
+      const yStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      yStatement.name = new Identifier(new Token(Tokens.IDENT, 'y'), 'y');
+
+      const foobarStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      foobarStatement.name = new Identifier(
+        new Token(Tokens.IDENT, 'foobar'),
+        'foobar'
+      );
+
+      expect(statements).toEqual([xStatement, yStatement, foobarStatement]);
+    });
   });
 });
