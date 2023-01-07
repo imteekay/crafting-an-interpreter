@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import {
+  ExpressionStatement,
+  IntegerLiteral,
+  PrefixExpression,
+  StatementKind,
+} from 'ast';
 import { ExpressionKind } from 'ast/base';
 import { parse } from './parse';
+import { Token, Tokens } from 'token';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -34,6 +40,21 @@ describe('Parser', () => {
           }
         }
       });
+    });
+
+    it('validates ast after parsing', () => {
+      const input = '!10;';
+      const { statements } = parse(input);
+
+      const bangToken = new Token(Tokens.BANG, '!');
+      const expressionStatement = new ExpressionStatement(bangToken);
+      const prefixExpression = new PrefixExpression(bangToken, '!');
+      prefixExpression.right = new IntegerLiteral(
+        new Token(Tokens.INT, '10'),
+        10
+      );
+      expressionStatement.expression = prefixExpression;
+      expect(statements).toEqual([expressionStatement]);
     });
   });
 });
