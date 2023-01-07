@@ -89,55 +89,30 @@ describe('Parser', () => {
   it('parses two infix expressions with different precedences', () => {
     const input = '1 + 2 * 3';
     const { statements } = parse(input);
+    const expressionStatement = new ExpressionStatement(
+      new Token(Tokens.INT, '1')
+    );
 
-    expect(statements).toEqual([
-      {
-        token: {
-          type: 'INT',
-          literal: '1',
-        },
-        kind: 'expression',
-        expression: {
-          token: {
-            type: '+',
-            literal: '+',
-          },
-          operator: '+',
-          left: {
-            token: {
-              type: 'INT',
-              literal: '1',
-            },
-            value: 1,
-            kind: 'integerLiteral',
-          },
-          kind: 'infix',
-          right: {
-            token: {
-              type: '*',
-              literal: '*',
-            },
-            operator: '*',
-            kind: 'infix',
-            left: {
-              token: {
-                type: 'INT',
-                literal: '2',
-              },
-              value: 2,
-              kind: 'integerLiteral',
-            },
-            right: {
-              token: {
-                type: 'INT',
-                literal: '3',
-              },
-              value: 3,
-              kind: 'integerLiteral',
-            },
-          },
-        },
-      },
-    ]);
+    const nestedInfixExpression = new InfixExpression(
+      new Token(Tokens.ASTERISK, '*'),
+      '*',
+      new IntegerLiteral(new Token(Tokens.INT, '2'), 2)
+    );
+
+    nestedInfixExpression.right = new IntegerLiteral(
+      new Token(Tokens.INT, '3'),
+      3
+    );
+
+    const infixExpression = new InfixExpression(
+      new Token(Tokens.PLUS, '+'),
+      '+',
+      new IntegerLiteral(new Token(Tokens.INT, '1'), 1)
+    );
+
+    infixExpression.right = nestedInfixExpression;
+    expressionStatement.expression = infixExpression;
+
+    expect(statements).toEqual([expressionStatement]);
   });
 });
