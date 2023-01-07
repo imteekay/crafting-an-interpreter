@@ -52,6 +52,7 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
 - If expressions
   - `let value = if (x > y) { x } else { y };`: this if-else expression will return a value and it assigns the value in the `value` variable.
   - The structure of an if-else expression: `if (<condition>) <consequence> else <alternative>`
+  - `IfExpression` AST: `condition` holds the condition, which can be any expression, and `consequence` and `alternative` point to the consequence and alternative of the conditional
 
 ## Final words & Resources
 

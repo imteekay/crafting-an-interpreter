@@ -11,6 +11,7 @@ export enum StatementKind {
   Let = 'let',
   Return = 'return',
   Expression = 'expression',
+  Block = 'block',
 }
 
 export enum ExpressionKind {
@@ -19,12 +20,14 @@ export enum ExpressionKind {
   Prefix = 'prefix',
   Infix = 'infix',
   Boolean = 'boolean',
+  If = 'if',
 }
 
 type StatementKindType =
   | StatementKind.Let
   | StatementKind.Return
-  | StatementKind.Expression;
+  | StatementKind.Expression
+  | StatementKind.Block;
 
 interface Node {
   tokenLiteral: () => string;
