@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { ExpressionStatement, StatementKind, Identifier } from 'ast';
 import { ExpressionKind } from 'ast/base';
+import { Token, Tokens } from 'token';
 import { parse } from './parse';
 
 describe('Parser', () => {
@@ -18,6 +19,15 @@ describe('Parser', () => {
         expect(statement.expression.value).toEqual('foobar');
         expect(statement.expression.tokenLiteral()).toEqual('foobar');
       }
+
+      const identifierToken = new Token(Tokens.IDENT, 'foobar');
+      const expressionStatement = new ExpressionStatement(identifierToken);
+      expressionStatement.expression = new Identifier(
+        identifierToken,
+        'foobar'
+      );
+
+      expect(statements).toEqual([expressionStatement]);
     });
   });
 });
