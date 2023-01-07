@@ -1,7 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { IntegerLiteral, StatementKind } from 'ast';
+import {
+  ExpressionStatement,
+  InfixExpression,
+  IntegerLiteral,
+  StatementKind,
+} from 'ast';
 import { ExpressionKind } from 'ast/base';
 import { parse } from './parse';
+import { Token, Tokens } from 'token';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
@@ -52,56 +58,32 @@ describe('Parser', () => {
   it('parses two infix expressions', () => {
     const input = '1 + 2 + 3';
     const { statements } = parse(input);
+    const plusToken = new Token(Tokens.PLUS, '+');
+    const expressionStatement = new ExpressionStatement(
+      new Token(Tokens.INT, '1')
+    );
 
-    expect(statements).toEqual([
-      {
-        token: {
-          type: 'INT',
-          literal: '1',
-        },
-        kind: 'expression',
-        expression: {
-          token: {
-            type: '+',
-            literal: '+',
-          },
-          operator: '+',
-          left: {
-            token: {
-              type: '+',
-              literal: '+',
-            },
-            operator: '+',
-            left: {
-              token: {
-                type: 'INT',
-                literal: '1',
-              },
-              value: 1,
-              kind: 'integerLiteral',
-            },
-            kind: 'infix',
-            right: {
-              token: {
-                type: 'INT',
-                literal: '2',
-              },
-              value: 2,
-              kind: 'integerLiteral',
-            },
-          },
-          kind: 'infix',
-          right: {
-            token: {
-              type: 'INT',
-              literal: '3',
-            },
-            value: 3,
-            kind: 'integerLiteral',
-          },
-        },
-      },
-    ]);
+    const nestedInfixExpression = new InfixExpression(
+      plusToken,
+      '+',
+      new IntegerLiteral(new Token(Tokens.INT, '1'), 1)
+    );
+
+    nestedInfixExpression.right = new IntegerLiteral(
+      new Token(Tokens.INT, '2'),
+      2
+    );
+
+    const infixExpression = new InfixExpression(
+      plusToken,
+      '+',
+      nestedInfixExpression
+    );
+
+    infixExpression.right = new IntegerLiteral(new Token(Tokens.INT, '3'), 3);
+    expressionStatement.expression = infixExpression;
+
+    expect(statements).toEqual([expressionStatement]);
   });
 
   it('parses two infix expressions with different precedences', () => {
