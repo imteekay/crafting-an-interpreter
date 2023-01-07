@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { ExpressionStatement, IntegerLiteral, StatementKind } from 'ast';
 import { ExpressionKind } from 'ast/base';
+import { Token, Tokens } from 'token';
 import { parse } from './parse';
 
 describe('Parser', () => {
@@ -21,6 +22,11 @@ describe('Parser', () => {
         expect(expression.value).toEqual(10);
         expect(expression.tokenLiteral()).toEqual('10');
       }
+
+      const integerToken = new Token(Tokens.INT, '10');
+      const expressionStatement = new ExpressionStatement(integerToken);
+      expressionStatement.expression = new IntegerLiteral(integerToken, 10);
+      expect(statements).toEqual([expressionStatement]);
     });
   });
 });
