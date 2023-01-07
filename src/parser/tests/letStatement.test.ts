@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { StatementKind } from 'ast';
+import { StatementKind, LetStatement, Identifier } from 'ast';
+import { Token, Tokens } from 'token';
 import { parse } from './parse';
 
 describe('Parser', () => {
@@ -27,6 +28,20 @@ describe('Parser', () => {
           expect(statement.name.tokenLiteral()).toEqual(identifier);
         }
       });
+
+      const xStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      xStatement.name = new Identifier(new Token(Tokens.IDENT, 'x'), 'x');
+
+      const yStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      yStatement.name = new Identifier(new Token(Tokens.IDENT, 'y'), 'y');
+
+      const foobarStatement = new LetStatement(new Token(Tokens.LET, 'let'));
+      foobarStatement.name = new Identifier(
+        new Token(Tokens.IDENT, 'foobar'),
+        'foobar'
+      );
+
+      expect(statements).toEqual([xStatement, yStatement, foobarStatement]);
     });
   });
 });
