@@ -18,7 +18,7 @@ export class IfExpression implements BaseExpression {
     return this.token.literal;
   }
 
-  string() {
+  string(): string {
     return `if ${this.condition.string()} ${this.consequence.string()} ${
       this.alternative ? `else ${this.alternative.string()}` : null
     }`;

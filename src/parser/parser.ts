@@ -327,6 +327,20 @@ export class Parser {
       expression.consequence = consequence;
     }
 
+    if (this.peekTokenIs(Tokens.ELSE)) {
+      this.nextToken();
+
+      if (!this.expectPeek(Tokens.LBRACE)) {
+        return null;
+      }
+
+      const alternative = this.parseBlockStatement();
+
+      if (alternative) {
+        expression.alternative = alternative;
+      }
+    }
+
     return expression;
   }
 
