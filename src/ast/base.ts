@@ -6,11 +6,13 @@ import { IntegerLiteral } from 'ast/IntegerLiteral';
 import { PrefixExpression } from 'ast/PrefixExpression';
 import { InfixExpression } from 'ast/InfixExpression';
 import { BooleanExpression } from 'ast/Boolean';
+import { IfExpression } from 'ast/IfExpression';
 
 export enum StatementKind {
   Let = 'let',
   Return = 'return',
   Expression = 'expression',
+  Block = 'block',
 }
 
 export enum ExpressionKind {
@@ -19,12 +21,14 @@ export enum ExpressionKind {
   Prefix = 'prefix',
   Infix = 'infix',
   Boolean = 'boolean',
+  If = 'if',
 }
 
 type StatementKindType =
   | StatementKind.Let
   | StatementKind.Return
-  | StatementKind.Expression;
+  | StatementKind.Expression
+  | StatementKind.Block;
 
 interface Node {
   tokenLiteral: () => string;
@@ -45,4 +49,5 @@ export type Expression =
   | IntegerLiteral
   | PrefixExpression
   | InfixExpression
-  | BooleanExpression;
+  | BooleanExpression
+  | IfExpression;

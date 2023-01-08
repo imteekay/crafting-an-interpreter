@@ -11,6 +11,8 @@ import {
   InfixExpression,
   PrefixExpression,
   BooleanExpression,
+  BlockStatement,
+  IfExpression,
 } from 'ast';
 
 export type ParserError = string;
@@ -62,6 +64,7 @@ export class Parser {
     this.registerPrefix(Tokens.TRUE, this.parseBoolean.bind(this));
     this.registerPrefix(Tokens.FALSE, this.parseBoolean.bind(this));
     this.registerPrefix(Tokens.LPAREN, this.parseGroupedExpression.bind(this));
+    this.registerPrefix(Tokens.IF, this.parseIfExpression.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -293,6 +296,74 @@ export class Parser {
     }
 
     return expression;
+  }
+
+  private parseIfExpression() {
+    const expression = new IfExpression(this.currentToken);
+
+    if (!this.expectPeek(Tokens.LPAREN)) {
+      return null;
+    }
+
+    this.nextToken();
+
+    const condition = this.parseExpression(Precedence.LOWEST);
+
+    if (condition) {
+      expression.condition = condition;
+    }
+
+    if (!this.expectPeek(Tokens.RPAREN)) {
+      return null;
+    }
+
+    if (!this.expectPeek(Tokens.LBRACE)) {
+      return null;
+    }
+
+    const consequence = this.parseBlockStatement();
+
+    if (consequence) {
+      expression.consequence = consequence;
+    }
+
+    if (this.peekTokenIs(Tokens.ELSE)) {
+      this.nextToken();
+
+      if (!this.expectPeek(Tokens.LBRACE)) {
+        return null;
+      }
+
+      const alternative = this.parseBlockStatement();
+
+      if (alternative) {
+        expression.alternative = alternative;
+      }
+    }
+
+    return expression;
+  }
+
+  private parseBlockStatement() {
+    const block = new BlockStatement(this.currentToken);
+    block.statements = [];
+
+    this.nextToken();
+
+    while (
+      !this.currentTokenIs(Tokens.RBRACE) &&
+      !this.currentTokenIs(Tokens.EOF)
+    ) {
+      const statement = this.parseStatement();
+
+      if (statement) {
+        block.statements.push(statement);
+      }
+
+      this.nextToken();
+    }
+
+    return block;
   }
   /** === Parsing Functions === */
 
