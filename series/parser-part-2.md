@@ -53,6 +53,18 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
   - `let value = if (x > y) { x } else { y };`: this if-else expression will return a value and it assigns the value in the `value` variable.
   - The structure of an if-else expression: `if (<condition>) <consequence> else <alternative>`
   - `IfExpression` AST: `condition` holds the condition, which can be any expression, and `consequence` and `alternative` point to the consequence and alternative of the conditional
+- Function literals expression
+  - e.g. `fn(x, y) { return x + y; }`
+  - function literals are expressions
+  - abstract structure: `fn <parameters> <block statement>`
+  - two main parts of function literals
+    - parameters are just a list of identifiers: `(<parameter one>, <parameter two>, <parameter three>, ...)`
+    - function's body as the block statement
+  - different usages of function literals
+    - the list of parameters can be empty: `fn() { return foobar + barfoo; }`
+    - function literal as the expression in a let statement: `let myFunction = fn(x, y) { return x + y; }`
+    - function literal as the expression in a return statement: `fn() { return fn(x, y) { return x > y; }; }`
+    - function literal as an argument when calling another function: `myFunc(x, y, fn(x, y) { return x > y; }); `
 
 ## Final words & Resources
 
