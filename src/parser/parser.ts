@@ -12,8 +12,8 @@ import {
   PrefixExpression,
   BooleanExpression,
   BlockStatement,
+  IfExpression,
 } from 'ast';
-import { IfExpression } from 'ast/IfExpression';
 
 export type ParserError = string;
 

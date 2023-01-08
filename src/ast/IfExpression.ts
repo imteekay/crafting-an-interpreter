@@ -1,6 +1,6 @@
 import { Token } from 'token';
 import { BaseExpression, Expression, ExpressionKind } from 'ast/base';
-import { BlockStatement } from './BlockStatement';
+import { BlockStatement } from 'ast/BlockStatement';
 
 export class IfExpression implements BaseExpression {
   token: Token;
