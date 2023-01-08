@@ -6,6 +6,7 @@ import { IntegerLiteral } from 'ast/IntegerLiteral';
 import { PrefixExpression } from 'ast/PrefixExpression';
 import { InfixExpression } from 'ast/InfixExpression';
 import { BooleanExpression } from 'ast/Boolean';
+import { IfExpression } from 'ast/IfExpression';
 
 export enum StatementKind {
   Let = 'let',
@@ -48,4 +49,5 @@ export type Expression =
   | IntegerLiteral
   | PrefixExpression
   | InfixExpression
-  | BooleanExpression;
+  | BooleanExpression
+  | IfExpression;
