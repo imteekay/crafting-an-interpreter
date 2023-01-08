@@ -6,7 +6,8 @@ export class BlockStatement implements BaseStatement {
   token: Token;
   kind: StatementKind.Block;
 
-  constructor() {
+  constructor(token: Token) {
+    this.token = token;
     this.kind = StatementKind.Block;
   }
 
