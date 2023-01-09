@@ -24,6 +24,7 @@ export enum ExpressionKind {
   Boolean = 'boolean',
   If = 'if',
   FunctionLiteral = 'functionLiteral',
+  Call = 'call',
 }
 
 type StatementKindType =
