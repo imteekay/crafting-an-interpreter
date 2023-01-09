@@ -4,11 +4,10 @@ import {
   ExpressionStatement,
   Identifier,
   InfixExpression,
-  StatementKind,
+  FunctionLiteral,
 } from 'ast';
 import { Token, Tokens } from 'token';
 import { parse } from './parse';
-import { FunctionLiteral } from 'ast/FunctionLiteral';
 
 describe('Parser', () => {
   describe('parseProgram', () => {

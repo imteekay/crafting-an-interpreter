@@ -1,7 +1,7 @@
 import { Token } from 'token';
 import { BaseExpression, ExpressionKind } from 'ast/base';
 import { BlockStatement } from 'ast/BlockStatement';
-import { Identifier } from './Identifier';
+import { Identifier } from 'ast/Identifier';
 
 export class FunctionLiteral implements BaseExpression {
   token: Token;
