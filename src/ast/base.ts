@@ -8,6 +8,7 @@ import { InfixExpression } from 'ast/InfixExpression';
 import { BooleanExpression } from 'ast/Boolean';
 import { IfExpression } from 'ast/IfExpression';
 import { FunctionLiteral } from 'ast/FunctionLiteral';
+import { CallExpression } from 'ast/CallExpression';
 
 export enum StatementKind {
   Let = 'let',
@@ -54,4 +55,5 @@ export type Expression =
   | InfixExpression
   | BooleanExpression
   | IfExpression
-  | FunctionLiteral;
+  | FunctionLiteral
+  | CallExpression;

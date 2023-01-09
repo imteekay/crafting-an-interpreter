@@ -7,9 +7,10 @@ export class CallExpression implements BaseExpression {
   arguments: Expression[];
   kind: ExpressionKind.Call;
 
-  constructor(token: Token) {
+  constructor(token: Token, fn: Expression) {
     this.token = token;
     this.kind = ExpressionKind.Call;
+    this.function = fn;
   }
 
   tokenLiteral() {
@@ -17,7 +18,11 @@ export class CallExpression implements BaseExpression {
   }
 
   string(): string {
-    // TODO: add the whole call expression string
-    return '';
+    return (
+      this.function.string() +
+      '(' +
+      this.arguments.map((arg) => arg.string()).join(', ') +
+      ')'
+    );
   }
 }
