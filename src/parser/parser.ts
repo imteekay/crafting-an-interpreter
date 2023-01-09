@@ -13,6 +13,7 @@ import {
   BooleanExpression,
   BlockStatement,
   IfExpression,
+  FunctionLiteral,
 } from 'ast';
 
 export type ParserError = string;
@@ -65,6 +66,7 @@ export class Parser {
     this.registerPrefix(Tokens.FALSE, this.parseBoolean.bind(this));
     this.registerPrefix(Tokens.LPAREN, this.parseGroupedExpression.bind(this));
     this.registerPrefix(Tokens.IF, this.parseIfExpression.bind(this));
+    this.registerPrefix(Tokens.FUNCTION, this.parseFunctionLiteral.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -364,6 +366,64 @@ export class Parser {
     }
 
     return block;
+  }
+
+  private parseFunctionLiteral() {
+    const functionLiteral = new FunctionLiteral(this.currentToken);
+
+    if (!this.expectPeek(Tokens.LPAREN)) {
+      return null;
+    }
+
+    const functionParameters = this.parseFunctionParameters();
+
+    if (functionParameters) {
+      functionLiteral.parameters = functionParameters;
+    }
+
+    if (!this.expectPeek(Tokens.LBRACE)) {
+      return null;
+    }
+
+    functionLiteral.body = this.parseBlockStatement();
+
+    return functionLiteral;
+  }
+
+  private parseFunctionParameters() {
+    const identifiers = [] as Identifier[];
+
+    if (this.peekTokenIs(Tokens.RPAREN)) {
+      this.nextToken();
+      return identifiers;
+    }
+
+    this.nextToken();
+
+    const identifier = new Identifier(
+      this.currentToken,
+      this.currentToken.literal
+    );
+
+    identifiers.push(identifier);
+
+    while (this.peekTokenIs(Tokens.COMMA)) {
+      this.nextToken();
+      this.nextToken();
+
+      const identifier = new Identifier(
+        this.currentToken,
+        this.currentToken.literal
+      );
+
+      identifiers.push(identifier);
+    }
+
+    if (!this.expectPeek(Tokens.RPAREN)) {
+      return null;
+    }
+
+    return identifiers;
   }
   /** === Parsing Functions === */
 
