@@ -65,6 +65,13 @@ Association of parsing functions (which Pratt calls “semantic code”) with to
     - function literal as the expression in a let statement: `let myFunction = fn(x, y) { return x + y; }`
     - function literal as the expression in a return statement: `fn() { return fn(x, y) { return x > y; }; }`
     - function literal as an argument when calling another function: `myFunc(x, y, fn(x, y) { return x > y; }); `
+- Call expressions
+  - structure: `<expression>(<comma separated expressions>)`
+  - e.g.
+    - simple integer literal expressions as arguments: `add(2, 3)`
+    - infix expressions as arguments: `add(2 + 2, 3 * 3 * 3)`
+    - call directly from the function literal: `fn(x, y) { x + y; }(2, 3)`
+    - function literal as argument: `callsFunction(2, 3, fn(x, y) { x + y; });`
 
 ## Final words & Resources
 
