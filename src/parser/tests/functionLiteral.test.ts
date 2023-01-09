@@ -12,7 +12,63 @@ import { FunctionLiteral } from 'ast/FunctionLiteral';
 
 describe('Parser', () => {
   describe('parseProgram', () => {
-    it('validates ast after parsing', () => {
+    it('validates ast after parsing function without parameters', () => {
+      const input = 'fn() {}';
+      const { statements } = parse(input);
+
+      const statement = new ExpressionStatement(
+        new Token(Tokens.FUNCTION, 'fn')
+      );
+
+      const functionLiteralExpression = new FunctionLiteral(
+        new Token(Tokens.FUNCTION, 'fn')
+      );
+
+      functionLiteralExpression.parameters = [];
+      functionLiteralExpression.body = new BlockStatement(
+        new Token(Tokens.LBRACE, '{')
+      );
+
+      statement.expression = functionLiteralExpression;
+
+      expect(statements).toEqual([statement]);
+    });
+
+    it('validates ast after parsing function with one parameter', () => {
+      const input = 'fn(x) { x; }';
+      const { statements } = parse(input);
+
+      const statement = new ExpressionStatement(
+        new Token(Tokens.FUNCTION, 'fn')
+      );
+
+      const functionLiteralExpression = new FunctionLiteral(
+        new Token(Tokens.FUNCTION, 'fn')
+      );
+
+      functionLiteralExpression.parameters = [
+        new Identifier(new Token(Tokens.IDENT, 'x'), 'x'),
+      ];
+
+      const body = new BlockStatement(new Token(Tokens.LBRACE, '{'));
+
+      const bodyStatement = new ExpressionStatement(
+        new Token(Tokens.IDENT, 'x')
+      );
+
+      bodyStatement.expression = new Identifier(
+        new Token(Tokens.IDENT, 'x'),
+        'x'
+      );
+
+      body.statements.push(bodyStatement);
+      functionLiteralExpression.body = body;
+      statement.expression = functionLiteralExpression;
+
+      expect(statements).toEqual([statement]);
+    });
+
+    it('validates ast after parsing function with multiple parameters', () => {
       const input = 'fn(x, y) { x + y; }';
       const { statements } = parse(input);
 
@@ -32,7 +88,7 @@ describe('Parser', () => {
       const body = new BlockStatement(new Token(Tokens.LBRACE, '{'));
 
       const bodyStatement = new ExpressionStatement(
-        new Token(Tokens.PLUS, '+')
+        new Token(Tokens.IDENT, 'x')
       );
 
       const infixExpression = new InfixExpression(
@@ -47,7 +103,7 @@ describe('Parser', () => {
       functionLiteralExpression.body = body;
       statement.expression = functionLiteralExpression;
 
-      expect(statements).toEqual(statement);
+      expect(statements).toEqual([statement]);
     });
   });
 });
