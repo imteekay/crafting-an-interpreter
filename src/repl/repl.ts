@@ -1,6 +1,6 @@
 import readline from 'readline';
-import { Tokens } from 'token';
 import { Lexer } from 'lexer';
+import { Parser } from 'parser';
 
 const ScannerClose = {
   exit: 'exit',
@@ -9,6 +9,12 @@ const ScannerClose = {
 
 const exits = [ScannerClose.exit, ScannerClose.quit];
 
+function printParserErrors(errors: string[]) {
+  for (const error of errors) {
+    console.error(error, '\n');
+  }
+}
+
 export function startRepl() {
   const scanner = readline.createInterface({
     input: process.stdin,
@@ -16,19 +22,20 @@ export function startRepl() {
   });
 
   function repl() {
+    console.log('start repl');
     scanner.question('> ', (input) => {
       if (exits.includes(input)) return scanner.close();
 
       const lexer = new Lexer(input);
+      const parser = new Parser(lexer);
+      const program = parser.parseProgram();
 
-      for (
-        let token = lexer.nextToken();
-        token.type !== Tokens.EOF;
-        token = lexer.nextToken()
-      ) {
-        console.log(token);
+      if (parser.getErrors().length > 0) {
+        printParserErrors(parser.getErrors());
+        repl();
       }
 
+      console.log(program.string());
       repl();
     });
   }
