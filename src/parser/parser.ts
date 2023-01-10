@@ -141,6 +141,14 @@ export class Parser {
       return null;
     }
 
+    this.nextToken();
+
+    const valueExpression = this.parseExpression(Precedence.LOWEST);
+
+    if (valueExpression) {
+      statement.value = valueExpression;
+    }
+
     while (!this.currentTokenIs(Tokens.SEMICOLON)) {
       this.nextToken();
     }
@@ -150,6 +158,12 @@ export class Parser {
 
   private parseReturnStatement() {
     const statement = new ReturnStatement(this.currentToken);
+    this.nextToken();
+    const returnValue = this.parseExpression(Precedence.LOWEST);
+
+    if (returnValue) {
+      statement.returnValue = returnValue;
+    }
 
     while (!this.currentTokenIs(Tokens.SEMICOLON)) {
       this.nextToken();
