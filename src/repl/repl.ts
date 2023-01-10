@@ -22,7 +22,6 @@ export function startRepl() {
   });
 
   function repl() {
-    console.log('start repl');
     scanner.question('> ', (input) => {
       if (exits.includes(input)) return scanner.close();
 
