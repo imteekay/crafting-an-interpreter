@@ -150,6 +150,12 @@ export class Parser {
 
   private parseReturnStatement() {
     const statement = new ReturnStatement(this.currentToken);
+    this.nextToken();
+    const returnValue = this.parseExpression(Precedence.LOWEST);
+
+    if (returnValue) {
+      statement.returnValue = returnValue;
+    }
 
     while (!this.currentTokenIs(Tokens.SEMICOLON)) {
       this.nextToken();

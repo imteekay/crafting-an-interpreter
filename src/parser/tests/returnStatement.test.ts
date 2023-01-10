@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ReturnStatement, StatementKind } from 'ast';
+import { IntegerLiteral, ReturnStatement, StatementKind } from 'ast';
 import { parse } from './parse';
 import { Token, Tokens } from 'token';
 
@@ -34,6 +34,11 @@ describe('Parser', () => {
 
       const returnStatement = new ReturnStatement(
         new Token(Tokens.RETURN, 'return')
+      );
+
+      returnStatement.returnValue = new IntegerLiteral(
+        new Token(Tokens.INT, '10'),
+        10
       );
 
       expect(statements).toEqual([returnStatement]);
