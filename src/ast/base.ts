@@ -10,6 +10,10 @@ import { IfExpression } from 'ast/IfExpression';
 import { FunctionLiteral } from 'ast/FunctionLiteral';
 import { CallExpression } from 'ast/CallExpression';
 
+export enum ProgramKind {
+  program = 'program',
+}
+
 export enum StatementKind {
   Let = 'let',
   Return = 'return',
@@ -28,19 +32,16 @@ export enum ExpressionKind {
   Call = 'call',
 }
 
-type StatementKindType =
-  | StatementKind.Let
-  | StatementKind.Return
-  | StatementKind.Expression
-  | StatementKind.Block;
+type NodeKind = ProgramKind | StatementKind | ExpressionKind;
 
-interface Node {
+export interface Node {
+  kind: NodeKind;
   tokenLiteral: () => string;
   string: () => string;
 }
 
 export interface BaseStatement extends Node {
-  kind: StatementKindType;
+  kind: StatementKind;
 }
 
 export interface BaseExpression extends Node {
