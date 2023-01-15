@@ -21,6 +21,10 @@ with the evaluation process, we know if it will return `a` or `b`.
     - it would be run in a virtual machine that knows how to interpret bytcode (bytecode cannot be interpreted by the CPU)
     - [difference between bytecode and machine code](https://www.geeksforgeeks.org/difference-between-byte-code-and-machine-code)
   - JIT (for “just in time”) interpreter/compiler: the virtual machine compiles the bytecode to native machine code, right before its execution - just in time
+- evaluating expressions
+  - `func Eval(node ast.Node) object.Object`: it takes a node (every AST node fulfills the node interface) and return the object
+  - this structure will help us recursively call eval, evaluate part of the AST node and recall it to evaluate the rest
+  - self-evaluating expressions: integers and booleans: they evaluate to themselves. if you type `10`, it will evaluate to `10`. If you type `true`, it will evaluate to `true`.
 
 ## Final words & Resources
 

@@ -2,7 +2,7 @@ type ObjectType = string;
 type type = () => ObjectType;
 type inspect = () => string;
 
-interface Object {
+export interface EvalObject {
   type: type;
   inspect: inspect;
 }
@@ -13,8 +13,12 @@ enum ObjectTypes {
   NULL = 'NULL',
 }
 
-export class Integer implements Object {
+export class Integer implements EvalObject {
   value: number;
+
+  constructor(value: number) {
+    this.value = value;
+  }
 
   type() {
     return ObjectTypes.INTEGER;
@@ -25,7 +29,7 @@ export class Integer implements Object {
   }
 }
 
-export class Boolean implements Object {
+export class Boolean implements EvalObject {
   value: boolean;
 
   type() {
@@ -37,7 +41,7 @@ export class Boolean implements Object {
   }
 }
 
-export class Null implements Object {
+export class Null implements EvalObject {
   type() {
     return ObjectTypes.NULL;
   }
