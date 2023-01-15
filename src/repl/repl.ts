@@ -1,6 +1,7 @@
 import readline from 'readline';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
+import { Evaluator } from 'evaluator';
 
 const ScannerClose = {
   exit: 'exit',
@@ -34,7 +35,13 @@ export function startRepl() {
         repl();
       }
 
-      console.log(program.string());
+      const evaluator = new Evaluator();
+      const evaluated = evaluator.evaluate(program);
+
+      if (evaluated) {
+        console.log(evaluated.inspect());
+      }
+
       repl();
     });
   }
