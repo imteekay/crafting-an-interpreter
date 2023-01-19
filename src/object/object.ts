@@ -29,8 +29,12 @@ export class Integer implements EvalObject {
   }
 }
 
-export class Boolean implements EvalObject {
+export class BooleanLiteral implements EvalObject {
   value: boolean;
+
+  constructor(value: boolean) {
+    this.value = value;
+  }
 
   type() {
     return ObjectTypes.BOOLEAN;

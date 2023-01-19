@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
-import { Integer } from 'object';
+import { BooleanLiteral, Integer } from 'object';
 
 function evaluate(input: string) {
   const lexer = new Lexer(input);
@@ -22,6 +22,18 @@ describe('Evaluator', () => {
     for (const { input, expected } of tests) {
       const evaluatedProgram = evaluate(input);
       expect(evaluatedProgram).toEqual(new Integer(expected));
+    }
+  });
+
+  it('evaluates boolean literals', () => {
+    const tests = [
+      { input: 'true', expected: true },
+      { input: 'false', expected: false },
+    ];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
     }
   });
 });

@@ -1,5 +1,11 @@
-import { EvalObject, Integer } from 'object';
-import { ExpressionStatement, IntegerLiteral, Program } from 'ast';
+import { BooleanLiteral, EvalObject, Integer } from 'object';
+import {
+  BooleanExpression,
+  ExpressionStatement,
+  IntegerLiteral,
+  Program,
+} from 'ast';
+
 import {
   ExpressionKind,
   Node,
@@ -17,6 +23,8 @@ export class Evaluator {
         return this.evaluate((node as ExpressionStatement).expression);
       case ExpressionKind.IntegerLiteral:
         return new Integer((node as IntegerLiteral).value);
+      case ExpressionKind.Boolean:
+        return new BooleanLiteral((node as BooleanExpression).value);
       default:
         return null;
     }
