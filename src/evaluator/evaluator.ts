@@ -1,4 +1,4 @@
-import { BooleanLiteral, EvalObject, Integer } from 'object';
+import { BooleanLiteral, EvalObject, Integer, Null } from 'object';
 import {
   BooleanExpression,
   ExpressionStatement,
@@ -14,6 +14,7 @@ import {
   StatementKind,
 } from 'ast/base';
 
+const NULL = new Null();
 const TRUE = new BooleanLiteral(true);
 const FALSE = new BooleanLiteral(false);
 

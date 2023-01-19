@@ -46,6 +46,8 @@ export class BooleanLiteral implements EvalObject {
 }
 
 export class Null implements EvalObject {
+  value: null = null;
+
   type() {
     return ObjectTypes.NULL;
   }
