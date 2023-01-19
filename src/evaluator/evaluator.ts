@@ -14,6 +14,9 @@ import {
   StatementKind,
 } from 'ast/base';
 
+const TRUE = new BooleanLiteral(true);
+const FALSE = new BooleanLiteral(false);
+
 export class Evaluator {
   evaluate(node: Node): EvalObject | null | undefined {
     switch (node.kind) {
@@ -24,7 +27,7 @@ export class Evaluator {
       case ExpressionKind.IntegerLiteral:
         return new Integer((node as IntegerLiteral).value);
       case ExpressionKind.Boolean:
-        return new BooleanLiteral((node as BooleanExpression).value);
+        return this.toBooleanLiteral((node as BooleanExpression).value);
       default:
         return null;
     }
@@ -40,5 +43,9 @@ export class Evaluator {
     }
 
     return result;
+  }
+
+  private toBooleanLiteral(value: boolean) {
+    return value ? TRUE : FALSE;
   }
 }
