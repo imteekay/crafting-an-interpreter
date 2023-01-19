@@ -3,10 +3,12 @@ import {
   BooleanExpression,
   ExpressionStatement,
   IntegerLiteral,
+  PrefixExpression,
   Program,
 } from 'ast';
 
 import {
+  Expression,
   ExpressionKind,
   Node,
   ProgramKind,
@@ -29,6 +31,20 @@ export class Evaluator {
         return new Integer((node as IntegerLiteral).value);
       case ExpressionKind.Boolean:
         return this.toBooleanLiteral((node as BooleanExpression).value);
+      case ExpressionKind.Prefix: {
+        const evaluatedRightExpressions = this.evaluate(
+          (node as PrefixExpression).right
+        );
+
+        const object =
+          evaluatedRightExpressions &&
+          this.evaluatePrefixExpression(
+            (node as PrefixExpression).operator,
+            evaluatedRightExpressions
+          );
+
+        return object;
+      }
       default:
         return null;
     }
@@ -48,5 +64,27 @@ export class Evaluator {
 
   private toBooleanLiteral(value: boolean) {
     return value ? TRUE : FALSE;
+  }
+
+  private evaluatePrefixExpression(operator: string, operand: EvalObject) {
+    switch (operator) {
+      case '!':
+        return this.evaluateBangOperatorExpression(operand);
+      default:
+        return NULL;
+    }
+  }
+
+  private evaluateBangOperatorExpression(operand: EvalObject) {
+    switch (operand) {
+      case TRUE:
+        return FALSE;
+      case FALSE:
+        return TRUE;
+      case NULL:
+        return TRUE;
+      default:
+        return FALSE;
+    }
   }
 }

@@ -36,4 +36,20 @@ describe('Evaluator', () => {
       expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
     }
   });
+
+  it('evaluates operator expressions', () => {
+    const tests = [
+      { input: '!true', expected: false },
+      { input: '!false', expected: true },
+      { input: '!!true', expected: true },
+      { input: '!!false', expected: false },
+      { input: '!10', expected: false },
+      { input: '!!10', expected: true },
+    ];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
+    }
+  });
 });
