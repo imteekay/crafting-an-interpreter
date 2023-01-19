@@ -1,1 +1,1 @@
-export { EvalObject, Integer, Boolean, Null } from 'object/object';
+export { EvalObject, Integer, BooleanLiteral, Null } from 'object/object';
