@@ -1,4 +1,4 @@
-import { BooleanLiteral, EvalObject, Integer, Null } from 'object';
+import { BooleanLiteral, EvalObject, Integer, Null, ObjectTypes } from 'object';
 import {
   BooleanExpression,
   ExpressionStatement,
@@ -8,7 +8,6 @@ import {
 } from 'ast';
 
 import {
-  Expression,
   ExpressionKind,
   Node,
   ProgramKind,
@@ -70,6 +69,8 @@ export class Evaluator {
     switch (operator) {
       case '!':
         return this.evaluateBangOperatorExpression(operand);
+      case '-':
+        return this.evaluateMinusOperatorExpression(operand);
       default:
         return NULL;
     }
@@ -86,5 +87,13 @@ export class Evaluator {
       default:
         return FALSE;
     }
+  }
+
+  private evaluateMinusOperatorExpression(operand: EvalObject) {
+    if (operand.type() !== ObjectTypes.INTEGER) {
+      return null;
+    }
+
+    return new Integer(-(operand as Integer).value);
   }
 }
