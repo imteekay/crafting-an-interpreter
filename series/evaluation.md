@@ -1,5 +1,7 @@
 # Evaluation
 
+Evaluation defined the semantics of the language.
+
 This code:
 
 ```
