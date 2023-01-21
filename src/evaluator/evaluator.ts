@@ -2,6 +2,7 @@ import { BooleanLiteral, EvalObject, Integer, Null, ObjectTypes } from 'object';
 import {
   BooleanExpression,
   ExpressionStatement,
+  InfixExpression,
   IntegerLiteral,
   PrefixExpression,
   Program,
@@ -43,6 +44,25 @@ export class Evaluator {
           );
 
         return object;
+      }
+      case ExpressionKind.Infix: {
+        const evaluatedLeftExpression = this.evaluate(
+          (node as InfixExpression).left
+        );
+
+        const evaluatedRightExpression = this.evaluate(
+          (node as InfixExpression).right
+        );
+
+        if (evaluatedLeftExpression && evaluatedRightExpression) {
+          return this.evaluateInfixExpression(
+            (node as InfixExpression).operator,
+            evaluatedLeftExpression,
+            evaluatedRightExpression
+          );
+        }
+
+        break;
       }
       default:
         return null;
@@ -95,5 +115,37 @@ export class Evaluator {
     }
 
     return new Integer(-(operand as Integer).value);
+  }
+
+  private evaluateInfixExpression(
+    operator: string,
+    left: EvalObject,
+    right: EvalObject
+  ) {
+    if (
+      left.type() === ObjectTypes.INTEGER &&
+      right.type() === ObjectTypes.INTEGER
+    ) {
+      return this.evaluateIntegerInfixExpression(operator, left, right);
+    }
+  }
+
+  private evaluateIntegerInfixExpression(
+    operator: string,
+    left: EvalObject,
+    right: EvalObject
+  ) {
+    switch (operator) {
+      case '+':
+        return new Integer((left as Integer).value + (right as Integer).value);
+      case '-':
+        return new Integer((left as Integer).value - (right as Integer).value);
+      case '*':
+        return new Integer((left as Integer).value * (right as Integer).value);
+      case '/':
+        return new Integer((left as Integer).value / (right as Integer).value);
+      default:
+        return new Null();
+    }
   }
 }
