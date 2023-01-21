@@ -1,5 +1,7 @@
 # Evaluation
 
+Evaluation defined the semantics of the language.
+
 This code:
 
 ```
@@ -25,6 +27,13 @@ with the evaluation process, we know if it will return `a` or `b`.
   - `func Eval(node ast.Node) object.Object`: it takes a node (every AST node fulfills the node interface) and return the object
   - this structure will help us recursively call eval, evaluate part of the AST node and recall it to evaluate the rest
   - self-evaluating expressions: integers and booleans: they evaluate to themselves. if you type `10`, it will evaluate to `10`. If you type `true`, it will evaluate to `true`.
+- operator expressions
+  - the operator `!` converts the operand into a boolean and then negates it
+    - if not a boolean, the value will be acted like a truthy or falsy value. e.g. `10`. `10` is truthy, so `!10` will be converted into `!true` and then negated `false`.
+    - `evaluateBangOperatorExpression`: if it's not true, false, or null, it means it's a truthy value and it should be evaluated as false (converting to boolean and negating it)
+  - infix:
+    - integer infix expressions: `1 + 1` should evaluate to `2`.
+    - boolean infix expressions: `true == true` should evaluate to `true`
 
 ## Final words & Resources
 

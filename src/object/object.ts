@@ -7,7 +7,7 @@ export interface EvalObject {
   inspect: inspect;
 }
 
-enum ObjectTypes {
+export enum ObjectTypes {
   INTEGER = 'INTEGER',
   BOOLEAN = 'BOOLEAN',
   NULL = 'NULL',
