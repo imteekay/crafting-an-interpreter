@@ -87,5 +87,25 @@ describe('Evaluator', () => {
         expect(evaluatedProgram).toEqual(new Integer(expected));
       }
     });
+
+    it('evaluates integer infix operators', () => {
+      const tests = [
+        { input: 'true', expected: true },
+        { input: 'false', expected: false },
+        { input: '1 < 2', expected: true },
+        { input: '1 > 2', expected: false },
+        { input: '1 < 1', expected: false },
+        { input: '1 > 1', expected: false },
+        { input: '1 == 1', expected: true },
+        { input: '1 != 1', expected: false },
+        { input: '1 == 2', expected: false },
+        { input: '1 != 2', expected: true },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
+      }
+    });
   });
 });

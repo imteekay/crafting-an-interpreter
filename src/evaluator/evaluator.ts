@@ -128,6 +128,8 @@ export class Evaluator {
     ) {
       return this.evaluateIntegerInfixExpression(operator, left, right);
     }
+
+    return new Null();
   }
 
   private evaluateIntegerInfixExpression(
@@ -144,6 +146,22 @@ export class Evaluator {
         return new Integer((left as Integer).value * (right as Integer).value);
       case '/':
         return new Integer((left as Integer).value / (right as Integer).value);
+      case '<':
+        return new BooleanLiteral(
+          (left as Integer).value < (right as Integer).value
+        );
+      case '>':
+        return new BooleanLiteral(
+          (left as Integer).value > (right as Integer).value
+        );
+      case '==':
+        return new BooleanLiteral(
+          (left as Integer).value == (right as Integer).value
+        );
+      case '!=':
+        return new BooleanLiteral(
+          (left as Integer).value != (right as Integer).value
+        );
       default:
         return new Null();
     }
