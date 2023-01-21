@@ -62,7 +62,7 @@ export class Evaluator {
           );
         }
 
-        break;
+        return null;
       }
       default:
         return null;
