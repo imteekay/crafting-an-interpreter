@@ -66,7 +66,7 @@ describe('Evaluator', () => {
       }
     });
 
-    it('evaluates infix operators', () => {
+    it('evaluates integer infix operators', () => {
       const tests = [
         { input: '1 + 1', expected: 2 },
         { input: '5 + 5 + 5 + 5 - 10', expected: 10 },
