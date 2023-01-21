@@ -187,9 +187,9 @@ export class Evaluator {
 
     switch (operator) {
       case '==':
-        return new BooleanLiteral(leftValue == rightValue);
+        return this.toBooleanLiteral(leftValue == rightValue);
       case '!=':
-        return new BooleanLiteral(leftValue != rightValue);
+        return this.toBooleanLiteral(leftValue != rightValue);
       default:
         return new Null();
     }
