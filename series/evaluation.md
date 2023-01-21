@@ -31,6 +31,9 @@ with the evaluation process, we know if it will return `a` or `b`.
   - the operator `!` converts the operand into a boolean and then negates it
     - if not a boolean, the value will be acted like a truthy or falsy value. e.g. `10`. `10` is truthy, so `!10` will be converted into `!true` and then negated `false`.
     - `evaluateBangOperatorExpression`: if it's not true, false, or null, it means it's a truthy value and it should be evaluated as false (converting to boolean and negating it)
+  - infix:
+    - integer infix expressions: `1 + 1` should evaluate to `2`.
+    - boolean infix expressions: `true == true` should evaluate to `true`
 
 ## Final words & Resources
 
