@@ -126,7 +126,22 @@ export class Evaluator {
       left.type() === ObjectTypes.INTEGER &&
       right.type() === ObjectTypes.INTEGER
     ) {
-      return this.evaluateIntegerInfixExpression(operator, left, right);
+      return this.evaluateIntegerInfixExpression(
+        operator,
+        left as Integer,
+        right as Integer
+      );
+    }
+
+    if (
+      left.type() === ObjectTypes.BOOLEAN &&
+      right.type() === ObjectTypes.BOOLEAN
+    ) {
+      return this.evaluateBooleanInfixExpression(
+        operator,
+        left as BooleanLiteral,
+        right as BooleanLiteral
+      );
     }
 
     return new Null();
@@ -134,34 +149,47 @@ export class Evaluator {
 
   private evaluateIntegerInfixExpression(
     operator: string,
-    left: EvalObject,
-    right: EvalObject
+    left: Integer,
+    right: Integer
   ) {
+    const leftValue = left.value;
+    const rightValue = right.value;
+
     switch (operator) {
       case '+':
-        return new Integer((left as Integer).value + (right as Integer).value);
+        return new Integer(leftValue + rightValue);
       case '-':
-        return new Integer((left as Integer).value - (right as Integer).value);
+        return new Integer(leftValue - rightValue);
       case '*':
-        return new Integer((left as Integer).value * (right as Integer).value);
+        return new Integer(leftValue * rightValue);
       case '/':
-        return new Integer((left as Integer).value / (right as Integer).value);
+        return new Integer(leftValue / rightValue);
       case '<':
-        return new BooleanLiteral(
-          (left as Integer).value < (right as Integer).value
-        );
+        return new BooleanLiteral(leftValue < rightValue);
       case '>':
-        return new BooleanLiteral(
-          (left as Integer).value > (right as Integer).value
-        );
+        return new BooleanLiteral(leftValue > rightValue);
       case '==':
-        return new BooleanLiteral(
-          (left as Integer).value == (right as Integer).value
-        );
+        return new BooleanLiteral(leftValue == rightValue);
       case '!=':
-        return new BooleanLiteral(
-          (left as Integer).value != (right as Integer).value
-        );
+        return new BooleanLiteral(leftValue != rightValue);
+      default:
+        return new Null();
+    }
+  }
+
+  private evaluateBooleanInfixExpression(
+    operator: string,
+    left: BooleanLiteral,
+    right: BooleanLiteral
+  ) {
+    const leftValue = left.value;
+    const rightValue = right.value;
+
+    switch (operator) {
+      case '==':
+        return new BooleanLiteral(leftValue == rightValue);
+      case '!=':
+        return new BooleanLiteral(leftValue != rightValue);
       default:
         return new Null();
     }
