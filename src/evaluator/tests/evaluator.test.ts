@@ -141,12 +141,25 @@ describe('Evaluator', () => {
       for (const { input, expected } of tests) {
         const evaluatedProgram = evaluate(input);
 
-        console.log(evaluatedProgram, expected);
         if (typeof expected === 'number') {
           expect(evaluatedProgram).toEqual(new Integer(expected));
         } else {
           expect(evaluatedProgram).toEqual(new Null());
         }
+      }
+    });
+
+    it('evaluates if else expressions', () => {
+      const tests = [
+        { input: 'return 10;', expected: 10 },
+        { input: 'return 10; 9;', expected: 10 },
+        { input: 'return 2 * 5; 9;', expected: 10 },
+        { input: '9; return 2 * 5; 9;', expected: 10 },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new Integer(expected));
       }
     });
   });

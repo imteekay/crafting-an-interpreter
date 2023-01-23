@@ -61,6 +61,10 @@ export class Null implements EvalObject {
 export class ReturnValue implements EvalObject {
   value: EvalObject;
 
+  constructor(value: EvalObject) {
+    this.value = value;
+  }
+
   type() {
     return ObjectTypes.RETURN_VALUE;
   }

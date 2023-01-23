@@ -1,4 +1,12 @@
-import { BooleanLiteral, EvalObject, Integer, Null, ObjectTypes } from 'object';
+import {
+  BooleanLiteral,
+  EvalObject,
+  Integer,
+  Null,
+  ObjectTypes,
+  ReturnValue,
+} from 'object';
+
 import {
   BlockStatement,
   BooleanExpression,
@@ -8,6 +16,7 @@ import {
   IntegerLiteral,
   PrefixExpression,
   Program,
+  ReturnStatement,
 } from 'ast';
 
 import {
@@ -70,6 +79,15 @@ export class Evaluator {
         return this.evaluateStatements((node as BlockStatement).statements);
       case ExpressionKind.If:
         return this.evaluateIfExpression(node as IfExpression);
+      case StatementKind.Return: {
+        const value = this.evaluate(node as ReturnStatement);
+
+        if (value) {
+          return new ReturnValue(value);
+        }
+
+        return null;
+      }
       default:
         return null;
     }
@@ -82,6 +100,10 @@ export class Evaluator {
 
     for (const statement of statements) {
       result = this.evaluate(statement);
+
+      if (result?.type() === ObjectTypes.RETURN_VALUE) {
+        return (result as ReturnValue).value;
+      }
     }
 
     return result;

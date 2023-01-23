@@ -4,4 +4,5 @@ export {
   BooleanLiteral,
   Null,
   ObjectTypes,
+  ReturnValue,
 } from 'object/object';
