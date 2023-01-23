@@ -11,6 +11,7 @@ export enum ObjectTypes {
   INTEGER = 'INTEGER',
   BOOLEAN = 'BOOLEAN',
   NULL = 'NULL',
+  RETURN_VALUE = 'RETURN_VALUE',
 }
 
 export class Integer implements EvalObject {
@@ -54,5 +55,17 @@ export class Null implements EvalObject {
 
   inspect() {
     return 'null';
+  }
+}
+
+export class ReturnValue implements EvalObject {
+  value: EvalObject;
+
+  type() {
+    return ObjectTypes.RETURN_VALUE;
+  }
+
+  inspect() {
+    return this.value.inspect();
   }
 }
