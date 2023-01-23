@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
-import { BooleanLiteral, Integer } from 'object';
+import { BooleanLiteral, Integer, Null } from 'object';
 
 function evaluate(input: string) {
   const lexer = new Lexer(input);
@@ -124,6 +124,29 @@ describe('Evaluator', () => {
       for (const { input, expected } of tests) {
         const evaluatedProgram = evaluate(input);
         expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
+      }
+    });
+
+    it('evaluates if else expressions', () => {
+      const tests = [
+        // { input: 'if (true) { 10 }', expected: 10 },
+        // { input: 'if (false) { 10 }', expected: null },
+        // { input: 'if (1) { 10 }', expected: 10 },
+        // { input: 'if (1 < 2) { 10 }', expected: 10 },
+        { input: 'if (1 > 2) { 10 }', expected: null },
+        { input: 'if (1 > 2) { 10 } else { 20 }', expected: 20 },
+        { input: 'if (1 < 2) { 10 } else { 20 }', expected: 10 },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+
+        console.log(evaluatedProgram, expected);
+        if (typeof expected === 'number') {
+          expect(evaluatedProgram).toEqual(new Integer(expected));
+        } else {
+          expect(evaluatedProgram).toEqual(new Null());
+        }
       }
     });
   });

@@ -1,7 +1,9 @@
 import { BooleanLiteral, EvalObject, Integer, Null, ObjectTypes } from 'object';
 import {
+  BlockStatement,
   BooleanExpression,
   ExpressionStatement,
+  IfExpression,
   InfixExpression,
   IntegerLiteral,
   PrefixExpression,
@@ -64,6 +66,10 @@ export class Evaluator {
 
         return null;
       }
+      case StatementKind.Block:
+        return this.evaluateStatements((node as BlockStatement).statements);
+      case ExpressionKind.If:
+        return this.evaluateIfExpression(node as IfExpression);
       default:
         return null;
     }
@@ -144,7 +150,7 @@ export class Evaluator {
       );
     }
 
-    return new Null();
+    return NULL;
   }
 
   private evaluateIntegerInfixExpression(
@@ -173,7 +179,7 @@ export class Evaluator {
       case '!=':
         return new BooleanLiteral(leftValue != rightValue);
       default:
-        return new Null();
+        return NULL;
     }
   }
 
@@ -191,7 +197,38 @@ export class Evaluator {
       case '!=':
         return this.toBooleanLiteral(leftValue != rightValue);
       default:
-        return new Null();
+        return NULL;
+    }
+  }
+
+  private evaluateIfExpression(node: IfExpression) {
+    const condition = this.evaluate(node.condition);
+
+    if (this.isTruthy(condition)) {
+      return this.evaluate(node.consequence);
+    }
+
+    if (node.alternative) {
+      return this.evaluate(node.alternative);
+    }
+
+    return NULL;
+  }
+
+  private isTruthy(condition: EvalObject | null | undefined) {
+    if (!condition) {
+      return NULL;
+    }
+
+    switch (condition.inspect()) {
+      case 'null':
+        return false;
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return true;
     }
   }
 }
