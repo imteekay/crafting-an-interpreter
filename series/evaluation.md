@@ -34,6 +34,10 @@ with the evaluation process, we know if it will return `a` or `b`.
   - infix:
     - integer infix expressions: `1 + 1` should evaluate to `2`.
     - boolean infix expressions: `true == true` should evaluate to `true`
+- conditionals
+  - When evaluating this if-else-expression the important thing is to only evaluate the correct branch.
+    - if the condition is met: evaluate the if branch only (true or a truthy value — not null and not false)
+    - if not: evaluate the else branch
 
 ## Final words & Resources
 
