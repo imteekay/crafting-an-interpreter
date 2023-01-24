@@ -80,7 +80,7 @@ export class Evaluator {
       case ExpressionKind.If:
         return this.evaluateIfExpression(node as IfExpression);
       case StatementKind.Return: {
-        const value = this.evaluate(node as ReturnStatement);
+        const value = this.evaluate((node as ReturnStatement).returnValue);
 
         if (value) {
           return new ReturnValue(value);
