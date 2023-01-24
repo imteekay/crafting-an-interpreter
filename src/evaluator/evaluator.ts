@@ -1,4 +1,12 @@
-import { BooleanLiteral, EvalObject, Integer, Null, ObjectTypes } from 'object';
+import {
+  BooleanLiteral,
+  EvalObject,
+  Integer,
+  Null,
+  ObjectTypes,
+  ReturnValue,
+} from 'object';
+
 import {
   BlockStatement,
   BooleanExpression,
@@ -8,6 +16,7 @@ import {
   IntegerLiteral,
   PrefixExpression,
   Program,
+  ReturnStatement,
 } from 'ast';
 
 import {
@@ -26,7 +35,7 @@ export class Evaluator {
   evaluate(node: Node): EvalObject | null | undefined {
     switch (node.kind) {
       case ProgramKind.program:
-        return this.evaluateStatements((node as Program).statements);
+        return this.evaluateProgram((node as Program).statements);
       case StatementKind.Expression:
         return this.evaluate((node as ExpressionStatement).expression);
       case ExpressionKind.IntegerLiteral:
@@ -67,21 +76,34 @@ export class Evaluator {
         return null;
       }
       case StatementKind.Block:
-        return this.evaluateStatements((node as BlockStatement).statements);
+        return this.evaluateBlockStatement(node as BlockStatement);
       case ExpressionKind.If:
         return this.evaluateIfExpression(node as IfExpression);
+      case StatementKind.Return: {
+        const value = this.evaluate((node as ReturnStatement).returnValue);
+
+        if (value) {
+          return new ReturnValue(value);
+        }
+
+        return null;
+      }
       default:
         return null;
     }
   }
 
-  private evaluateStatements(
+  private evaluateProgram(
     statements: Statement[]
   ): EvalObject | null | undefined {
     let result: EvalObject | null | undefined;
 
     for (const statement of statements) {
       result = this.evaluate(statement);
+
+      if (result?.type() === ObjectTypes.RETURN_VALUE) {
+        return (result as ReturnValue).value;
+      }
     }
 
     return result;
@@ -199,6 +221,20 @@ export class Evaluator {
       default:
         return NULL;
     }
+  }
+
+  private evaluateBlockStatement(node: BlockStatement) {
+    let result: EvalObject | null | undefined;
+
+    for (const statement of node.statements) {
+      result = this.evaluate(statement);
+
+      if (result && result.type() === ObjectTypes.RETURN_VALUE) {
+        return result;
+      }
+    }
+
+    return result;
   }
 
   private evaluateIfExpression(node: IfExpression) {
