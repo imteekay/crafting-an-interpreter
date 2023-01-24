@@ -35,7 +35,7 @@ export class Evaluator {
   evaluate(node: Node): EvalObject | null | undefined {
     switch (node.kind) {
       case ProgramKind.program:
-        return this.evaluateStatements((node as Program).statements);
+        return this.evaluateProgram((node as Program).statements);
       case StatementKind.Expression:
         return this.evaluate((node as ExpressionStatement).expression);
       case ExpressionKind.IntegerLiteral:
@@ -76,7 +76,7 @@ export class Evaluator {
         return null;
       }
       case StatementKind.Block:
-        return this.evaluateStatements((node as BlockStatement).statements);
+        return this.evaluateBlockStatement(node as BlockStatement);
       case ExpressionKind.If:
         return this.evaluateIfExpression(node as IfExpression);
       case StatementKind.Return: {
@@ -93,7 +93,7 @@ export class Evaluator {
     }
   }
 
-  private evaluateStatements(
+  private evaluateProgram(
     statements: Statement[]
   ): EvalObject | null | undefined {
     let result: EvalObject | null | undefined;
@@ -221,6 +221,20 @@ export class Evaluator {
       default:
         return NULL;
     }
+  }
+
+  private evaluateBlockStatement(node: BlockStatement) {
+    let result: EvalObject | null | undefined;
+
+    for (const statement of node.statements) {
+      result = this.evaluate(statement);
+
+      if (result && result.type() === ObjectTypes.RETURN_VALUE) {
+        return result;
+      }
+    }
+
+    return result;
   }
 
   private evaluateIfExpression(node: IfExpression) {
