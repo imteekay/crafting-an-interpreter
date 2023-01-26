@@ -5,4 +5,5 @@ export {
   Null,
   ObjectTypes,
   ReturnValue,
+  ErrorObject,
 } from 'object/object';

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
-import { BooleanLiteral, Integer, Null } from 'object';
+import { BooleanLiteral, ErrorObject, Integer, Null } from 'object';
 
 function evaluate(input: string) {
   const lexer = new Lexer(input);
@@ -168,6 +168,53 @@ describe('Evaluator', () => {
       for (const { input, expected } of tests) {
         const evaluatedProgram = evaluate(input);
         expect(evaluatedProgram).toEqual(new Integer(expected));
+      }
+    });
+
+    it('handles errors', () => {
+      const tests = [
+        {
+          input: '5 + true;',
+          expected: 'type mismatch: INTEGER + BOOLEAN',
+        },
+        {
+          input: '5 + true; 5;',
+          expected: 'type mismatch: INTEGER + BOOLEAN',
+        },
+        {
+          input: '-true',
+          expected: 'unknown operator: -BOOLEAN',
+        },
+        {
+          input: 'true + false;',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
+        {
+          input: 'true + false;',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
+        {
+          input: 'if (10 > 1) { true + false; }',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
+        {
+          input: ` if (10 > 1) {
+            if (10 > 1) {
+              return true + false;
+          }
+          return 1; }
+          `,
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
+        {
+          input: 'unknown operator: BOOLEAN + BOOLEAN',
+          expected: '5; true + false; 5',
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new ErrorObject(expected));
       }
     });
   });
