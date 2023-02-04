@@ -2,14 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
-import { BooleanLiteral, ErrorObject, Integer, Null } from 'object';
+import {
+  BooleanLiteral,
+  Environment,
+  ErrorObject,
+  Integer,
+  Null,
+} from 'object';
 
 function evaluate(input: string) {
   const lexer = new Lexer(input);
   const parser = new Parser(lexer);
   const evaluator = new Evaluator();
+  const env = new Environment();
   const program = parser.parseProgram();
-  return evaluator.evaluate(program);
+  return evaluator.evaluate(program, env);
 }
 
 describe('Evaluator', () => {
@@ -209,6 +216,10 @@ describe('Evaluator', () => {
           input: '5; true + false; 5',
           expected: 'unknown operator: BOOLEAN + BOOLEAN',
         },
+        {
+          input: 'foo',
+          expected: 'identifier not found: foo',
+        },
       ];
 
       for (const { input, expected } of tests) {
@@ -216,5 +227,22 @@ describe('Evaluator', () => {
         expect(evaluatedProgram).toEqual(new ErrorObject(expected));
       }
     });
+  });
+
+  it('evaluates let statements', () => {
+    const tests = [
+      { input: 'let a = 5; a;', expected: 5 },
+      { input: 'let a = 5 * 5; a;', expected: 25 },
+      { input: 'let a = 5; let b = a; b;', expected: 5 },
+      {
+        input: 'let a = 5; let b = a; let c = a + b + 5; c;',
+        expected: 15,
+      },
+    ];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new Integer(expected));
+    }
   });
 });
