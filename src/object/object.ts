@@ -1,6 +1,6 @@
 type ObjectType = string;
 type type = () => ObjectType;
-type inspect = () => string;
+type inspect = (error?: ErrorObject) => string;
 
 export interface EvalObject {
   type: type;
@@ -12,6 +12,7 @@ export enum ObjectTypes {
   BOOLEAN = 'BOOLEAN',
   NULL = 'NULL',
   RETURN_VALUE = 'RETURN_VALUE',
+  ERROR = 'ERROR',
 }
 
 export class Integer implements EvalObject {
@@ -71,5 +72,21 @@ export class ReturnValue implements EvalObject {
 
   inspect() {
     return this.value.inspect();
+  }
+}
+
+export class ErrorObject implements EvalObject {
+  message: string;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+
+  type() {
+    return ObjectTypes.ERROR;
+  }
+
+  inspect(error?: ErrorObject) {
+    return `ERROR: ${error?.message}`;
   }
 }

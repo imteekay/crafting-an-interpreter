@@ -1,5 +1,6 @@
 import {
   BooleanLiteral,
+  ErrorObject,
   EvalObject,
   Integer,
   Null,
@@ -47,6 +48,10 @@ export class Evaluator {
           (node as PrefixExpression).right
         );
 
+        if (this.isError(evaluatedRightExpressions)) {
+          return evaluatedRightExpressions;
+        }
+
         const object =
           evaluatedRightExpressions &&
           this.evaluatePrefixExpression(
@@ -61,9 +66,17 @@ export class Evaluator {
           (node as InfixExpression).left
         );
 
+        if (this.isError(evaluatedLeftExpression)) {
+          return evaluatedLeftExpression;
+        }
+
         const evaluatedRightExpression = this.evaluate(
           (node as InfixExpression).right
         );
+
+        if (this.isError(evaluatedRightExpression)) {
+          return evaluatedRightExpression;
+        }
 
         if (evaluatedLeftExpression && evaluatedRightExpression) {
           return this.evaluateInfixExpression(
@@ -81,6 +94,10 @@ export class Evaluator {
         return this.evaluateIfExpression(node as IfExpression);
       case StatementKind.Return: {
         const value = this.evaluate((node as ReturnStatement).returnValue);
+
+        if (this.isError(value)) {
+          return value;
+        }
 
         if (value) {
           return new ReturnValue(value);
@@ -104,6 +121,10 @@ export class Evaluator {
       if (result?.type() === ObjectTypes.RETURN_VALUE) {
         return (result as ReturnValue).value;
       }
+
+      if (result?.type() === ObjectTypes.ERROR) {
+        return result;
+      }
     }
 
     return result;
@@ -120,7 +141,7 @@ export class Evaluator {
       case '-':
         return this.evaluateMinusOperatorExpression(operand);
       default:
-        return NULL;
+        return this.newError(`unknown operator: ${operator}${operand.type()}`);
     }
   }
 
@@ -139,7 +160,7 @@ export class Evaluator {
 
   private evaluateMinusOperatorExpression(operand: EvalObject) {
     if (operand.type() !== ObjectTypes.INTEGER) {
-      return null;
+      return this.newError(`unknown operator: -${operand.type()}`);
     }
 
     return new Integer(-(operand as Integer).value);
@@ -172,7 +193,15 @@ export class Evaluator {
       );
     }
 
-    return NULL;
+    if (left.type() !== right.type()) {
+      return this.newError(
+        `type mismatch: ${left.type()} ${operator} ${right.type()}`
+      );
+    }
+
+    return this.newError(
+      `unknown operator: ${left.type()} ${operator} ${right.type()}`
+    );
   }
 
   private evaluateIntegerInfixExpression(
@@ -201,7 +230,9 @@ export class Evaluator {
       case '!=':
         return new BooleanLiteral(leftValue != rightValue);
       default:
-        return NULL;
+        return this.newError(
+          `unknown operator: ${left.type()} ${operator} ${right.type()}`
+        );
     }
   }
 
@@ -219,7 +250,9 @@ export class Evaluator {
       case '!=':
         return this.toBooleanLiteral(leftValue != rightValue);
       default:
-        return NULL;
+        return this.newError(
+          `unknown operator: ${left.type()} ${operator} ${right.type()}`
+        );
     }
   }
 
@@ -229,7 +262,10 @@ export class Evaluator {
     for (const statement of node.statements) {
       result = this.evaluate(statement);
 
-      if (result && result.type() === ObjectTypes.RETURN_VALUE) {
+      if (
+        result?.type() === ObjectTypes.RETURN_VALUE ||
+        result?.type() === ObjectTypes.ERROR
+      ) {
         return result;
       }
     }
@@ -266,5 +302,17 @@ export class Evaluator {
       default:
         return true;
     }
+  }
+
+  private newError(message: string) {
+    return new ErrorObject(message);
+  }
+
+  private isError(evalObject: EvalObject | null | undefined) {
+    if (evalObject && evalObject.type() === ObjectTypes.ERROR) {
+      return evalObject.type() === ObjectTypes.ERROR;
+    }
+
+    return false;
   }
 }
