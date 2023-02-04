@@ -2,6 +2,7 @@ import readline from 'readline';
 import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
+import { Environment } from 'object';
 
 const ScannerClose = {
   exit: 'exit',
@@ -22,6 +23,8 @@ export function startRepl() {
     output: process.stdout,
   });
 
+  const env = new Environment();
+
   function repl() {
     scanner.question('> ', (input) => {
       if (exits.includes(input)) return scanner.close();
@@ -36,7 +39,7 @@ export function startRepl() {
       }
 
       const evaluator = new Evaluator();
-      const evaluated = evaluator.evaluate(program);
+      const evaluated = evaluator.evaluate(program, env);
 
       if (evaluated) {
         console.log(evaluated.inspect());

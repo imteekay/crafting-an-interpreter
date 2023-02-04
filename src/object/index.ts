@@ -7,3 +7,5 @@ export {
   ReturnValue,
   ErrorObject,
 } from 'object/object';
+
+export { Environment } from 'object/environment';

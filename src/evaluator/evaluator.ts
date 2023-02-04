@@ -1,5 +1,6 @@
 import {
   BooleanLiteral,
+  Environment,
   ErrorObject,
   EvalObject,
   Integer,
@@ -12,9 +13,11 @@ import {
   BlockStatement,
   BooleanExpression,
   ExpressionStatement,
+  Identifier,
   IfExpression,
   InfixExpression,
   IntegerLiteral,
+  LetStatement,
   PrefixExpression,
   Program,
   ReturnStatement,
@@ -33,19 +36,20 @@ const TRUE = new BooleanLiteral(true);
 const FALSE = new BooleanLiteral(false);
 
 export class Evaluator {
-  evaluate(node: Node): EvalObject | null | undefined {
+  evaluate(node: Node, env: Environment): EvalObject | null | undefined {
     switch (node.kind) {
       case ProgramKind.program:
-        return this.evaluateProgram((node as Program).statements);
+        return this.evaluateProgram((node as Program).statements, env);
       case StatementKind.Expression:
-        return this.evaluate((node as ExpressionStatement).expression);
+        return this.evaluate((node as ExpressionStatement).expression, env);
       case ExpressionKind.IntegerLiteral:
         return new Integer((node as IntegerLiteral).value);
       case ExpressionKind.Boolean:
         return this.toBooleanLiteral((node as BooleanExpression).value);
       case ExpressionKind.Prefix: {
         const evaluatedRightExpressions = this.evaluate(
-          (node as PrefixExpression).right
+          (node as PrefixExpression).right,
+          env
         );
 
         if (this.isError(evaluatedRightExpressions)) {
@@ -63,7 +67,8 @@ export class Evaluator {
       }
       case ExpressionKind.Infix: {
         const evaluatedLeftExpression = this.evaluate(
-          (node as InfixExpression).left
+          (node as InfixExpression).left,
+          env
         );
 
         if (this.isError(evaluatedLeftExpression)) {
@@ -71,7 +76,8 @@ export class Evaluator {
         }
 
         const evaluatedRightExpression = this.evaluate(
-          (node as InfixExpression).right
+          (node as InfixExpression).right,
+          env
         );
 
         if (this.isError(evaluatedRightExpression)) {
@@ -89,11 +95,11 @@ export class Evaluator {
         return null;
       }
       case StatementKind.Block:
-        return this.evaluateBlockStatement(node as BlockStatement);
+        return this.evaluateBlockStatement(node as BlockStatement, env);
       case ExpressionKind.If:
-        return this.evaluateIfExpression(node as IfExpression);
+        return this.evaluateIfExpression(node as IfExpression, env);
       case StatementKind.Return: {
-        const value = this.evaluate((node as ReturnStatement).returnValue);
+        const value = this.evaluate((node as ReturnStatement).returnValue, env);
 
         if (this.isError(value)) {
           return value;
@@ -105,18 +111,35 @@ export class Evaluator {
 
         return null;
       }
+      case StatementKind.Let: {
+        const value = this.evaluate((node as LetStatement).value, env);
+
+        if (this.isError(value)) {
+          return value;
+        }
+
+        if (value) {
+          env.set((node as LetStatement).name.value, value);
+        }
+
+        return null;
+      }
+      case ExpressionKind.Identifier: {
+        return this.evaluateIdentifier(node as Identifier, env);
+      }
       default:
         return null;
     }
   }
 
   private evaluateProgram(
-    statements: Statement[]
+    statements: Statement[],
+    env: Environment
   ): EvalObject | null | undefined {
     let result: EvalObject | null | undefined;
 
     for (const statement of statements) {
-      result = this.evaluate(statement);
+      result = this.evaluate(statement, env);
 
       if (result?.type() === ObjectTypes.RETURN_VALUE) {
         return (result as ReturnValue).value;
@@ -256,11 +279,11 @@ export class Evaluator {
     }
   }
 
-  private evaluateBlockStatement(node: BlockStatement) {
+  private evaluateBlockStatement(node: BlockStatement, env: Environment) {
     let result: EvalObject | null | undefined;
 
     for (const statement of node.statements) {
-      result = this.evaluate(statement);
+      result = this.evaluate(statement, env);
 
       if (
         result?.type() === ObjectTypes.RETURN_VALUE ||
@@ -273,18 +296,28 @@ export class Evaluator {
     return result;
   }
 
-  private evaluateIfExpression(node: IfExpression) {
-    const condition = this.evaluate(node.condition);
+  private evaluateIfExpression(node: IfExpression, env: Environment) {
+    const condition = this.evaluate(node.condition, env);
 
     if (this.isTruthy(condition)) {
-      return this.evaluate(node.consequence);
+      return this.evaluate(node.consequence, env);
     }
 
     if (node.alternative) {
-      return this.evaluate(node.alternative);
+      return this.evaluate(node.alternative, env);
     }
 
     return NULL;
+  }
+
+  private evaluateIdentifier(node: Identifier, env: Environment) {
+    const { has, value } = env.get(node.value);
+
+    if (!has) {
+      return this.newError(`identifier not found: ${node.value}`);
+    }
+
+    return value;
   }
 
   private isTruthy(condition: EvalObject | null | undefined) {
