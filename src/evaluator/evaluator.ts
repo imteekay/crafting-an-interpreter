@@ -48,6 +48,10 @@ export class Evaluator {
           (node as PrefixExpression).right
         );
 
+        if (this.isError(evaluatedRightExpressions)) {
+          return evaluatedRightExpressions;
+        }
+
         const object =
           evaluatedRightExpressions &&
           this.evaluatePrefixExpression(
@@ -62,9 +66,17 @@ export class Evaluator {
           (node as InfixExpression).left
         );
 
+        if (this.isError(evaluatedLeftExpression)) {
+          return evaluatedLeftExpression;
+        }
+
         const evaluatedRightExpression = this.evaluate(
           (node as InfixExpression).right
         );
+
+        if (this.isError(evaluatedRightExpression)) {
+          return evaluatedRightExpression;
+        }
 
         if (evaluatedLeftExpression && evaluatedRightExpression) {
           return this.evaluateInfixExpression(
@@ -82,6 +94,10 @@ export class Evaluator {
         return this.evaluateIfExpression(node as IfExpression);
       case StatementKind.Return: {
         const value = this.evaluate((node as ReturnStatement).returnValue);
+
+        if (this.isError(value)) {
+          return value;
+        }
 
         if (value) {
           return new ReturnValue(value);
@@ -290,5 +306,13 @@ export class Evaluator {
 
   private newError(message: string) {
     return new ErrorObject(message);
+  }
+
+  private isError(evalObject: EvalObject | null | undefined) {
+    if (evalObject && evalObject.type() === ObjectTypes.ERROR) {
+      return evalObject.type() === ObjectTypes.ERROR;
+    }
+
+    return false;
   }
 }
