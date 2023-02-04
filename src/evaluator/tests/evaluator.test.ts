@@ -185,14 +185,14 @@ describe('Evaluator', () => {
           input: '-true',
           expected: 'unknown operator: -BOOLEAN',
         },
-        // {
-        //   input: 'true + false;',
-        //   expected: 'unknown operator: BOOLEAN + BOOLEAN',
-        // },
-        // {
-        //   input: 'true + false;',
-        //   expected: 'unknown operator: BOOLEAN + BOOLEAN',
-        // },
+        {
+          input: 'true + false;',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
+        {
+          input: 'true + false;',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
+        },
         {
           input: 'if (10 > 1) { true + false; }',
           expected: 'unknown operator: BOOLEAN + BOOLEAN',
@@ -206,8 +206,8 @@ describe('Evaluator', () => {
           expected: 'unknown operator: BOOLEAN + BOOLEAN',
         },
         {
-          input: 'unknown operator: BOOLEAN + BOOLEAN',
-          expected: '5; true + false; 5',
+          input: '5; true + false; 5',
+          expected: 'unknown operator: BOOLEAN + BOOLEAN',
         },
       ];
 
