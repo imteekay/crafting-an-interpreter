@@ -6,6 +6,7 @@ import {
   BooleanLiteral,
   Environment,
   ErrorObject,
+  FunctionObject,
   Integer,
   Null,
 } from 'object';
@@ -244,5 +245,21 @@ describe('Evaluator', () => {
       const evaluatedProgram = evaluate(input);
       expect(evaluatedProgram).toEqual(new Integer(expected));
     }
+  });
+
+  describe('evaluates functions', () => {
+    it('evaluates to function object', () => {
+      const input = 'fn(n) { n + 1 };';
+      const evaluatedProgram = evaluate(input);
+
+      expect((evaluatedProgram as FunctionObject).parameters.length).toEqual(1);
+      expect(
+        (evaluatedProgram as FunctionObject).parameters[0].string()
+      ).toEqual('n');
+
+      expect((evaluatedProgram as FunctionObject).body.string()).toEqual(
+        '(n + 1)'
+      );
+    });
   });
 });

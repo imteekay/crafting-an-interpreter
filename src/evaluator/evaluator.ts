@@ -3,6 +3,7 @@ import {
   Environment,
   ErrorObject,
   EvalObject,
+  FunctionObject,
   Integer,
   Null,
   ObjectTypes,
@@ -21,6 +22,7 @@ import {
   PrefixExpression,
   Program,
   ReturnStatement,
+  FunctionLiteral,
 } from 'ast';
 
 import {
@@ -126,6 +128,13 @@ export class Evaluator {
       }
       case ExpressionKind.Identifier: {
         return this.evaluateIdentifier(node as Identifier, env);
+      }
+      case ExpressionKind.FunctionLiteral: {
+        return new FunctionObject(
+          (node as FunctionLiteral).parameters,
+          (node as FunctionLiteral).body,
+          env
+        );
       }
       default:
         return null;

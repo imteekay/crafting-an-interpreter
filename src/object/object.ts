@@ -100,6 +100,16 @@ export class FunctionObject implements EvalObject {
   body: BlockStatement;
   env: Environment;
 
+  constructor(
+    parameters: Identifier[],
+    body: BlockStatement,
+    env: Environment
+  ) {
+    this.parameters = parameters;
+    this.body = body;
+    this.env = env;
+  }
+
   type() {
     return ObjectTypes.FUNCTION;
   }
