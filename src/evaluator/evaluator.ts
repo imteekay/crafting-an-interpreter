@@ -153,6 +153,8 @@ export class Evaluator {
         if (args.length === 1 && this.isError(args[0])) {
           return args[0];
         }
+
+        return this.applyFunction(fn, args);
       }
       default:
         return null;
@@ -192,13 +194,17 @@ export class Evaluator {
 
       if (this.isError(evaluatedExpression)) {
         // TODO: fix this, should return an object
-        return evaluatedExpression;
+        return [evaluatedExpression] as EvalObject[];
       }
 
       result.push(evaluatedExpression);
     }
 
     return result;
+  }
+
+  private applyFunction(fn: EvalObject, args: EvalObject[]) {
+    // TODO
   }
 
   private evaluatePrefixExpression(operator: string, operand: EvalObject) {

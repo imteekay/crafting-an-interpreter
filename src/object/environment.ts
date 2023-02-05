@@ -6,6 +6,7 @@ type EnvironmentType = Map<EnvironmentTypeKey, EnvironmentTypeValue>;
 
 export class Environment {
   store: EnvironmentType;
+  outer: Environment;
 
   constructor() {
     this.store = new Map<EnvironmentTypeKey, EnvironmentTypeValue>();
@@ -14,6 +15,13 @@ export class Environment {
   get(name: EnvironmentTypeKey) {
     const has = this.store.has(name);
     const value = this.store.get(name);
+
+    if (!has && this.outer) {
+      const has = this.outer.store.has(name);
+      const value = this.outer.store.get(name);
+      return { has, value };
+    }
+
     return { has, value };
   }
 
