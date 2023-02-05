@@ -40,6 +40,10 @@ with the evaluation process, we know if it will return `a` or `b`.
     - if not: evaluate the else branch
 - functions
   - an IR object: body and paramaters to evaluate the function and environment to hold internal values and enable closure (That allows for closures, which “close over” the environment they’re defined in and can later access it.)
+  - evaluation
+    - evaluate parameters/arguments (identifiers/expressions)
+    - evaluate the function (call expression)
+    - evaluate the function body (block statement)
 
 ## Final words & Resources
 

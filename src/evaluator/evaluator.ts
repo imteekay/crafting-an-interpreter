@@ -23,9 +23,11 @@ import {
   Program,
   ReturnStatement,
   FunctionLiteral,
+  CallExpression,
 } from 'ast';
 
 import {
+  Expression,
   ExpressionKind,
   Node,
   ProgramKind,
@@ -136,6 +138,22 @@ export class Evaluator {
           env
         );
       }
+      case ExpressionKind.Call: {
+        const fn = this.evaluate((node as CallExpression).function, env);
+
+        if (this.isError(fn)) {
+          return fn;
+        }
+
+        const args = this.evaluateExpressions(
+          (node as CallExpression).arguments,
+          env
+        );
+
+        if (args.length === 1 && this.isError(args[0])) {
+          return args[0];
+        }
+      }
       default:
         return null;
     }
@@ -164,6 +182,23 @@ export class Evaluator {
 
   private toBooleanLiteral(value: boolean) {
     return value ? TRUE : FALSE;
+  }
+
+  private evaluateExpressions(expressions: Expression[], env: Environment) {
+    const result = [];
+
+    for (const expression of expressions) {
+      const evaluatedExpression = this.evaluate(expression, env);
+
+      if (this.isError(evaluatedExpression)) {
+        // TODO: fix this, should return an object
+        return evaluatedExpression;
+      }
+
+      result.push(evaluatedExpression);
+    }
+
+    return result;
   }
 
   private evaluatePrefixExpression(operator: string, operand: EvalObject) {
