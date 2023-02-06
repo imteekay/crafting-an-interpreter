@@ -204,7 +204,14 @@ export class Evaluator {
   }
 
   private applyFunction(fn: EvalObject, args: EvalObject[]) {
-    // TODO
+    if (!(fn instanceof FunctionObject)) {
+      return this.newError(`not a function: ${fn.type()}`);
+    }
+
+    const extendedEnv = this.extendFunctionEnv(fn, args);
+    const evaluatedBody = this.evaluate(fn.body, extendedEnv);
+
+    return this.unwrapReturnValue(evaluatedBody);
   }
 
   private evaluatePrefixExpression(operator: string, operand: EvalObject) {
@@ -368,6 +375,24 @@ export class Evaluator {
     }
 
     return value;
+  }
+
+  private extendFunctionEnv(fn: FunctionObject, args: EvalObject[]) {
+    const env = new Environment(fn.env);
+
+    for (const [index, identifier] of fn.parameters.entries()) {
+      env.set(identifier.value, args[index]);
+    }
+
+    return env;
+  }
+
+  private unwrapReturnValue(evaluatedBody: EvalObject | null | undefined) {
+    if (evaluatedBody instanceof ReturnValue) {
+      return evaluatedBody.value;
+    }
+
+    return evaluatedBody;
   }
 
   private isTruthy(condition: EvalObject | null | undefined) {

@@ -6,10 +6,11 @@ type EnvironmentType = Map<EnvironmentTypeKey, EnvironmentTypeValue>;
 
 export class Environment {
   store: EnvironmentType;
-  outer: Environment;
+  outer?: Environment;
 
-  constructor() {
+  constructor(outer?: Environment) {
     this.store = new Map<EnvironmentTypeKey, EnvironmentTypeValue>();
+    this.outer = outer;
   }
 
   get(name: EnvironmentTypeKey) {
