@@ -289,5 +289,17 @@ describe('Evaluator', () => {
       const evaluatedProgram = evaluate('fn() {}()');
       expect(evaluatedProgram).toEqual(undefined);
     });
+
+    it('evaluates function application with closures', () => {
+      const evaluatedProgram = evaluate(`
+        let newAdder = fn(x) {
+          fn(y) { x + y };
+        };
+        let addTwo = newAdder(2);
+        addTwo(2);
+      `);
+
+      expect(evaluatedProgram).toEqual(new Integer(4));
+    });
   });
 });
