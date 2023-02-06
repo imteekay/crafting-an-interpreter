@@ -1,7 +1,7 @@
 import { EvalObject } from 'object/object';
 
 type EnvironmentTypeKey = string;
-type EnvironmentTypeValue = EvalObject;
+type EnvironmentTypeValue = EvalObject | null | undefined;
 type EnvironmentType = Map<EnvironmentTypeKey, EnvironmentTypeValue>;
 
 export class Environment {

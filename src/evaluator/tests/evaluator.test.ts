@@ -276,12 +276,18 @@ describe('Evaluator', () => {
           expected: 20,
         },
         { input: 'fn(x) { x; }(5)', expected: 5 },
+        { input: 'fn() { 5; }()', expected: 5 },
       ];
 
       for (const { input, expected } of tests) {
         const evaluatedProgram = evaluate(input);
         expect(evaluatedProgram).toEqual(new Integer(expected));
       }
+    });
+
+    it('evaluates function application to undefined', () => {
+      const evaluatedProgram = evaluate('fn() {}()');
+      expect(evaluatedProgram).toEqual(undefined);
     });
   });
 });

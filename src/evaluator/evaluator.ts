@@ -141,7 +141,7 @@ export class Evaluator {
       case ExpressionKind.Call: {
         const fn = this.evaluate((node as CallExpression).function, env);
 
-        if (this.isError(fn)) {
+        if (this.isError(fn) || !fn) {
           return fn;
         }
 
@@ -203,7 +203,10 @@ export class Evaluator {
     return result;
   }
 
-  private applyFunction(fn: EvalObject, args: EvalObject[]) {
+  private applyFunction(
+    fn: EvalObject,
+    args: (EvalObject | null | undefined)[]
+  ) {
     if (!(fn instanceof FunctionObject)) {
       return this.newError(`not a function: ${fn.type()}`);
     }
@@ -377,7 +380,10 @@ export class Evaluator {
     return value;
   }
 
-  private extendFunctionEnv(fn: FunctionObject, args: EvalObject[]) {
+  private extendFunctionEnv(
+    fn: FunctionObject,
+    args: (EvalObject | null | undefined)[]
+  ) {
     const env = new Environment(fn.env);
 
     for (const [index, identifier] of fn.parameters.entries()) {
