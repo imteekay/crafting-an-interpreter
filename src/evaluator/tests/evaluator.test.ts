@@ -6,6 +6,7 @@ import {
   BooleanLiteral,
   Environment,
   ErrorObject,
+  FunctionObject,
   Integer,
   Null,
 } from 'object';
@@ -244,5 +245,61 @@ describe('Evaluator', () => {
       const evaluatedProgram = evaluate(input);
       expect(evaluatedProgram).toEqual(new Integer(expected));
     }
+  });
+
+  describe('evaluates functions', () => {
+    it('evaluates to function object', () => {
+      const input = 'fn(n) { n + 1 };';
+      const evaluatedProgram = evaluate(input);
+
+      expect((evaluatedProgram as FunctionObject).parameters.length).toEqual(1);
+      expect(
+        (evaluatedProgram as FunctionObject).parameters[0].string()
+      ).toEqual('n');
+
+      expect((evaluatedProgram as FunctionObject).body.string()).toEqual(
+        '(n + 1)'
+      );
+    });
+
+    it('evaluates function application', () => {
+      const tests = [
+        { input: 'let identity = fn(x) { x; }; identity(5);', expected: 5 },
+        {
+          input: 'let identity = fn(x) { return x; }; identity(5);',
+          expected: 5,
+        },
+        { input: 'let double = fn(x) { x * 2; }; double(5);', expected: 10 },
+        { input: 'let add = fn(x, y) { x + y; }; add(5, 5);', expected: 10 },
+        {
+          input: 'let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));',
+          expected: 20,
+        },
+        { input: 'fn(x) { x; }(5)', expected: 5 },
+        { input: 'fn() { 5; }()', expected: 5 },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new Integer(expected));
+      }
+    });
+
+    it('evaluates function application to undefined', () => {
+      const evaluatedProgram = evaluate('fn() {}()');
+      expect(evaluatedProgram).toEqual(undefined);
+    });
+
+    it('evaluates function application with closures', () => {
+      const evaluatedProgram = evaluate(`
+        let newAdder = fn(x) {
+          fn(y) { x + y };
+        };
+        let addTwo = newAdder(2);
+        addTwo(2);
+      `);
+
+      expect(evaluatedProgram).toEqual(new Integer(4));
+    });
   });
 });

@@ -3,6 +3,7 @@ import {
   Environment,
   ErrorObject,
   EvalObject,
+  FunctionObject,
   Integer,
   Null,
   ObjectTypes,
@@ -21,9 +22,12 @@ import {
   PrefixExpression,
   Program,
   ReturnStatement,
+  FunctionLiteral,
+  CallExpression,
 } from 'ast';
 
 import {
+  Expression,
   ExpressionKind,
   Node,
   ProgramKind,
@@ -127,6 +131,31 @@ export class Evaluator {
       case ExpressionKind.Identifier: {
         return this.evaluateIdentifier(node as Identifier, env);
       }
+      case ExpressionKind.FunctionLiteral: {
+        return new FunctionObject(
+          (node as FunctionLiteral).parameters,
+          (node as FunctionLiteral).body,
+          env
+        );
+      }
+      case ExpressionKind.Call: {
+        const fn = this.evaluate((node as CallExpression).function, env);
+
+        if (this.isError(fn) || !fn) {
+          return fn;
+        }
+
+        const args = this.evaluateExpressions(
+          (node as CallExpression).arguments,
+          env
+        );
+
+        if (args.length === 1 && this.isError(args[0])) {
+          return args[0];
+        }
+
+        return this.applyFunction(fn, args);
+      }
       default:
         return null;
     }
@@ -155,6 +184,37 @@ export class Evaluator {
 
   private toBooleanLiteral(value: boolean) {
     return value ? TRUE : FALSE;
+  }
+
+  private evaluateExpressions(expressions: Expression[], env: Environment) {
+    const result = [];
+
+    for (const expression of expressions) {
+      const evaluatedExpression = this.evaluate(expression, env);
+
+      if (this.isError(evaluatedExpression)) {
+        // TODO: fix this, should return an object
+        return [evaluatedExpression] as EvalObject[];
+      }
+
+      result.push(evaluatedExpression);
+    }
+
+    return result;
+  }
+
+  private applyFunction(
+    fn: EvalObject,
+    args: (EvalObject | null | undefined)[]
+  ) {
+    if (!(fn instanceof FunctionObject)) {
+      return this.newError(`not a function: ${fn.type()}`);
+    }
+
+    const extendedEnv = this.extendFunctionEnv(fn, args);
+    const evaluatedBody = this.evaluate(fn.body, extendedEnv);
+
+    return this.unwrapReturnValue(evaluatedBody);
   }
 
   private evaluatePrefixExpression(operator: string, operand: EvalObject) {
@@ -318,6 +378,27 @@ export class Evaluator {
     }
 
     return value;
+  }
+
+  private extendFunctionEnv(
+    fn: FunctionObject,
+    args: (EvalObject | null | undefined)[]
+  ) {
+    const env = new Environment(fn.env);
+
+    for (const [index, identifier] of fn.parameters.entries()) {
+      env.set(identifier.value, args[index]);
+    }
+
+    return env;
+  }
+
+  private unwrapReturnValue(evaluatedBody: EvalObject | null | undefined) {
+    if (evaluatedBody instanceof ReturnValue) {
+      return evaluatedBody.value;
+    }
+
+    return evaluatedBody;
   }
 
   private isTruthy(condition: EvalObject | null | undefined) {

@@ -1,3 +1,6 @@
+import { BlockStatement, Identifier } from 'ast';
+import { Environment } from 'object/environment';
+
 type ObjectType = string;
 type type = () => ObjectType;
 type inspect = (error?: ErrorObject) => string;
@@ -13,6 +16,7 @@ export enum ObjectTypes {
   NULL = 'NULL',
   RETURN_VALUE = 'RETURN_VALUE',
   ERROR = 'ERROR',
+  FUNCTION = 'FUNCTION',
 }
 
 export class Integer implements EvalObject {
@@ -88,5 +92,33 @@ export class ErrorObject implements EvalObject {
 
   inspect(error?: ErrorObject) {
     return `ERROR: ${error?.message}`;
+  }
+}
+
+export class FunctionObject implements EvalObject {
+  parameters: Identifier[];
+  body: BlockStatement;
+  env: Environment;
+
+  constructor(
+    parameters: Identifier[],
+    body: BlockStatement,
+    env: Environment
+  ) {
+    this.parameters = parameters;
+    this.body = body;
+    this.env = env;
+  }
+
+  type() {
+    return ObjectTypes.FUNCTION;
+  }
+
+  inspect() {
+    return `
+      fn(${this.parameters.join(', ')}) {
+        ${this.body.string()}
+      }
+    `;
   }
 }
