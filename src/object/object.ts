@@ -17,6 +17,7 @@ export enum ObjectTypes {
   RETURN_VALUE = 'RETURN_VALUE',
   ERROR = 'ERROR',
   FUNCTION = 'FUNCTION',
+  STRING = 'STRING',
 }
 
 export class Integer implements EvalObject {
@@ -120,5 +121,21 @@ export class FunctionObject implements EvalObject {
         ${this.body.string()}
       }
     `;
+  }
+}
+
+export class StringObject implements EvalObject {
+  value: string;
+
+  constructor(value: string) {
+    this.value = value;
+  }
+
+  type() {
+    return ObjectTypes.STRING;
+  }
+
+  inspect() {
+    return this.value;
   }
 }

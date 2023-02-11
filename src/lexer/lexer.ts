@@ -81,6 +81,8 @@ export class Lexer {
         return this.buildToken(Tokens.GREATER_THAN, '>');
       case '':
         return this.buildToken(Tokens.EOF, '');
+      case '"':
+        return this.buildToken(Tokens.STRING, this.readString());
       default:
         if (this.isLetter(this.char)) {
           const tokenLiteral = this.readIdentifier();
@@ -120,6 +122,17 @@ export class Lexer {
     }
 
     return this.input.substring(initialIntPosition, this.position);
+  }
+
+  private readString() {
+    const position = this.position + 1;
+    this.readChar();
+
+    while (this.char && this.char !== '"') {
+      this.readChar();
+    }
+
+    return this.input.slice(position, this.position);
   }
 
   private isLetter(char: string) {

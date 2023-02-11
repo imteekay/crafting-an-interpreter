@@ -9,6 +9,7 @@ import { BooleanExpression } from 'ast/Boolean';
 import { IfExpression } from 'ast/IfExpression';
 import { FunctionLiteral } from 'ast/FunctionLiteral';
 import { CallExpression } from 'ast/CallExpression';
+import { StringLiteral } from 'ast/StringLiteral';
 
 export enum ProgramKind {
   program = 'program',
@@ -24,6 +25,7 @@ export enum StatementKind {
 export enum ExpressionKind {
   Identifier = 'identifier',
   IntegerLiteral = 'integerLiteral',
+  StringLiteral = 'stringLiteral',
   Prefix = 'prefix',
   Infix = 'infix',
   Boolean = 'boolean',
@@ -57,4 +59,5 @@ export type Expression =
   | BooleanExpression
   | IfExpression
   | FunctionLiteral
-  | CallExpression;
+  | CallExpression
+  | StringLiteral;

@@ -8,6 +8,7 @@ import {
   Null,
   ObjectTypes,
   ReturnValue,
+  StringObject,
 } from 'object';
 
 import {
@@ -24,6 +25,7 @@ import {
   ReturnStatement,
   FunctionLiteral,
   CallExpression,
+  StringLiteral,
 } from 'ast';
 
 import {
@@ -50,6 +52,8 @@ export class Evaluator {
         return new Integer((node as IntegerLiteral).value);
       case ExpressionKind.Boolean:
         return this.toBooleanLiteral((node as BooleanExpression).value);
+      case ExpressionKind.StringLiteral:
+        return new StringObject((node as StringLiteral).value);
       case ExpressionKind.Prefix: {
         const evaluatedRightExpressions = this.evaluate(
           (node as PrefixExpression).right,
@@ -276,6 +280,17 @@ export class Evaluator {
       );
     }
 
+    if (
+      left.type() === ObjectTypes.STRING &&
+      right.type() === ObjectTypes.STRING
+    ) {
+      return this.evaluateStringInfixExpression(
+        operator,
+        left as StringObject,
+        right as StringObject
+      );
+    }
+
     if (left.type() !== right.type()) {
       return this.newError(
         `type mismatch: ${left.type()} ${operator} ${right.type()}`
@@ -337,6 +352,23 @@ export class Evaluator {
           `unknown operator: ${left.type()} ${operator} ${right.type()}`
         );
     }
+  }
+
+  private evaluateStringInfixExpression(
+    operator: string,
+    left: StringObject,
+    right: StringObject
+  ) {
+    if (operator !== '+') {
+      return this.newError(
+        `unknown operator: ${left.type()} ${operator} ${right.type()}`
+      );
+    }
+
+    const leftValue = left.value;
+    const rightValue = right.value;
+
+    return new StringObject(leftValue + rightValue);
   }
 
   private evaluateBlockStatement(node: BlockStatement, env: Environment) {

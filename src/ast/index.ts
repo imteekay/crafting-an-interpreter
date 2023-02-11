@@ -18,3 +18,4 @@ export { BlockStatement } from 'ast/BlockStatement';
 export { IfExpression } from 'ast/IfExpression';
 export { FunctionLiteral } from 'ast/FunctionLiteral';
 export { CallExpression } from 'ast/CallExpression';
+export { StringLiteral } from 'ast/StringLiteral';

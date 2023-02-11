@@ -9,6 +9,7 @@ import {
   FunctionObject,
   Integer,
   Null,
+  StringObject,
 } from 'object';
 
 function evaluate(input: string) {
@@ -42,6 +43,26 @@ describe('Evaluator', () => {
     for (const { input, expected } of tests) {
       const evaluatedProgram = evaluate(input);
       expect(evaluatedProgram).toEqual(new BooleanLiteral(expected));
+    }
+  });
+
+  it('evaluates string literals', () => {
+    const tests = [{ input: '"Hello World"', expected: 'Hello World' }];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new StringObject(expected));
+    }
+  });
+
+  it('evaluates string concatenation', () => {
+    const tests = [
+      { input: '"Hello" + " " + "World"', expected: 'Hello World' },
+    ];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new StringObject(expected));
     }
   });
 
@@ -220,6 +241,10 @@ describe('Evaluator', () => {
         {
           input: 'foo',
           expected: 'identifier not found: foo',
+        },
+        {
+          input: '"Hello" - "World"',
+          expected: 'unknown operator: STRING - STRING',
         },
       ];
 
