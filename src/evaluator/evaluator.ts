@@ -1,5 +1,6 @@
 import {
   BooleanLiteral,
+  Builtin,
   Environment,
   ErrorObject,
   EvalObject,
@@ -41,7 +42,29 @@ const NULL = new Null();
 const TRUE = new BooleanLiteral(true);
 const FALSE = new BooleanLiteral(false);
 
+type Builtins = Record<string, EvalObject>;
+
 export class Evaluator {
+  builtins: Builtins = {
+    len: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      const arg = args[0];
+
+      if (arg instanceof StringObject) {
+        return new Integer(arg.value.length);
+      }
+
+      return this.newError(
+        `argument to "len" not supported, got ${arg.type()}`
+      );
+    }),
+  };
+
   evaluate(node: Node, env: Environment): EvalObject | null | undefined {
     switch (node.kind) {
       case ProgramKind.program:
@@ -211,14 +234,17 @@ export class Evaluator {
     fn: EvalObject,
     args: (EvalObject | null | undefined)[]
   ) {
-    if (!(fn instanceof FunctionObject)) {
-      return this.newError(`not a function: ${fn.type()}`);
+    if (fn instanceof FunctionObject) {
+      const extendedEnv = this.extendFunctionEnv(fn, args);
+      const evaluatedBody = this.evaluate(fn.body, extendedEnv);
+      return this.unwrapReturnValue(evaluatedBody);
     }
 
-    const extendedEnv = this.extendFunctionEnv(fn, args);
-    const evaluatedBody = this.evaluate(fn.body, extendedEnv);
+    if (fn instanceof Builtin) {
+      return fn.fn(...(args as EvalObject[]));
+    }
 
-    return this.unwrapReturnValue(evaluatedBody);
+    return this.newError(`not a function: ${fn.type()}`);
   }
 
   private evaluatePrefixExpression(operator: string, operand: EvalObject) {
@@ -405,11 +431,17 @@ export class Evaluator {
   private evaluateIdentifier(node: Identifier, env: Environment) {
     const { has, value } = env.get(node.value);
 
-    if (!has) {
-      return this.newError(`identifier not found: ${node.value}`);
+    if (has) {
+      return value;
     }
 
-    return value;
+    const builtin = this.builtins[node.value];
+
+    if (builtin) {
+      return builtin;
+    }
+
+    return this.newError(`identifier not found: ${node.value}`);
   }
 
   private extendFunctionEnv(

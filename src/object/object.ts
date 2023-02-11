@@ -92,8 +92,8 @@ export class ErrorObject implements EvalObject {
     return ObjectTypes.ERROR;
   }
 
-  inspect(error?: ErrorObject) {
-    return `ERROR: ${error?.message}`;
+  inspect() {
+    return `ERROR: ${this.message}`;
   }
 }
 

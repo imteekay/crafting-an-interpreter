@@ -346,7 +346,11 @@ describe('Evaluator', () => {
       const tests = [
         {
           input: `len(1)`,
-          expected: 'argument to `len` not supported, got INTEGER',
+          expected: 'argument to "len" not supported, got INTEGER',
+        },
+        {
+          input: `len()`,
+          expected: 'wrong number of arguments. got=0, want=1',
         },
         {
           input: `len("one", "two")`,
