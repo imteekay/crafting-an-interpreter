@@ -15,6 +15,7 @@ import {
   IfExpression,
   FunctionLiteral,
   CallExpression,
+  StringLiteral,
 } from 'ast';
 
 export type ParserError = string;
@@ -68,6 +69,7 @@ export class Parser {
     this.registerPrefix(Tokens.LPAREN, this.parseGroupedExpression.bind(this));
     this.registerPrefix(Tokens.IF, this.parseIfExpression.bind(this));
     this.registerPrefix(Tokens.FUNCTION, this.parseFunctionLiteral.bind(this));
+    this.registerPrefix(Tokens.STRING, this.parseStringLiteral.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -404,6 +406,10 @@ export class Parser {
     functionLiteral.body = this.parseBlockStatement();
 
     return functionLiteral;
+  }
+
+  private parseStringLiteral() {
+    return new StringLiteral(this.currentToken, this.currentToken.literal);
   }
 
   private parseFunctionParameters() {
