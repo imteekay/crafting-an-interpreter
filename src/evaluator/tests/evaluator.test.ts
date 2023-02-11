@@ -327,4 +327,37 @@ describe('Evaluator', () => {
       expect(evaluatedProgram).toEqual(new Integer(4));
     });
   });
+
+  describe('evaluates builtin functions', () => {
+    it('evaluates function application of builtin functions', () => {
+      const tests = [
+        { input: `len("")`, expected: 0 },
+        { input: `len("four")`, expected: 4 },
+        { input: `len("hello world")`, expected: 11 },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new Integer(expected));
+      }
+    });
+
+    it('handles unsupported argunents', () => {
+      const tests = [
+        {
+          input: `len(1)`,
+          expected: 'argument to `len` not supported, got INTEGER',
+        },
+        {
+          input: `len("one", "two")`,
+          expected: 'wrong number of arguments. got=2, want=1',
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        expect(evaluatedProgram).toEqual(new ErrorObject(expected));
+      }
+    });
+  });
 });
