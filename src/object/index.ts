@@ -7,6 +7,7 @@ export {
   ReturnValue,
   ErrorObject,
   FunctionObject,
+  StringObject,
 } from 'object/object';
 
 export { Environment } from 'object/environment';

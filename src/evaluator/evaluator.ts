@@ -8,6 +8,7 @@ import {
   Null,
   ObjectTypes,
   ReturnValue,
+  StringObject,
 } from 'object';
 
 import {
@@ -24,6 +25,7 @@ import {
   ReturnStatement,
   FunctionLiteral,
   CallExpression,
+  StringLiteral,
 } from 'ast';
 
 import {
@@ -50,6 +52,8 @@ export class Evaluator {
         return new Integer((node as IntegerLiteral).value);
       case ExpressionKind.Boolean:
         return this.toBooleanLiteral((node as BooleanExpression).value);
+      case ExpressionKind.StringLiteral:
+        return new StringObject((node as StringLiteral).value);
       case ExpressionKind.Prefix: {
         const evaluatedRightExpressions = this.evaluate(
           (node as PrefixExpression).right,
