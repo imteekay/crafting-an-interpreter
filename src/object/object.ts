@@ -18,6 +18,7 @@ export enum ObjectTypes {
   ERROR = 'ERROR',
   FUNCTION = 'FUNCTION',
   STRING = 'STRING',
+  BUILTIN = 'BUILTIN',
 }
 
 export class Integer implements EvalObject {
@@ -91,8 +92,8 @@ export class ErrorObject implements EvalObject {
     return ObjectTypes.ERROR;
   }
 
-  inspect(error?: ErrorObject) {
-    return `ERROR: ${error?.message}`;
+  inspect() {
+    return `ERROR: ${this.message}`;
   }
 }
 
@@ -137,5 +138,23 @@ export class StringObject implements EvalObject {
 
   inspect() {
     return this.value;
+  }
+}
+
+type BuiltingFunction = (...args: EvalObject[]) => EvalObject;
+
+export class Builtin implements EvalObject {
+  fn: BuiltingFunction;
+
+  constructor(fn: BuiltingFunction) {
+    this.fn = fn;
+  }
+
+  type() {
+    return ObjectTypes.BUILTIN;
+  }
+
+  inspect() {
+    return 'builting function';
   }
 }

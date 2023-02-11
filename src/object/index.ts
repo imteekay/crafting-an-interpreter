@@ -8,6 +8,7 @@ export {
   ErrorObject,
   FunctionObject,
   StringObject,
+  Builtin,
 } from 'object/object';
 
 export { Environment } from 'object/environment';
