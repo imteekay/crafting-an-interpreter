@@ -55,6 +55,17 @@ describe('Evaluator', () => {
     }
   });
 
+  it('evaluates string concatenation', () => {
+    const tests = [
+      { input: '"Hello" + " " + "World"', expected: 'Hello World' },
+    ];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram).toEqual(new StringObject(expected));
+    }
+  });
+
   describe('evaluates operator expressions', () => {
     it('evaluates bang operators', () => {
       const tests = [
@@ -230,6 +241,10 @@ describe('Evaluator', () => {
         {
           input: 'foo',
           expected: 'identifier not found: foo',
+        },
+        {
+          input: '"Hello" - "World"',
+          expected: 'unknown operator: STRING - STRING',
         },
       ];
 
