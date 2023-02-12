@@ -498,48 +498,13 @@ export class Parser {
 
   private parseCallExpression(fn: Expression) {
     const callExpression = new CallExpression(this.currentToken, fn);
-    const args = this.parseCallArguments();
+    const args = this.parseExpressionList(Tokens.RPAREN);
 
     if (args) {
       callExpression.arguments = args;
     }
 
     return callExpression;
-  }
-
-  private parseCallArguments() {
-    const args = [] as Expression[];
-
-    // if function call has no arguments
-    if (this.peekTokenIs(Tokens.RPAREN)) {
-      this.nextToken();
-      return args;
-    }
-
-    this.nextToken();
-
-    const argumentExpression = this.parseExpression(Precedence.LOWEST);
-
-    if (argumentExpression) {
-      args.push(argumentExpression);
-    }
-
-    while (this.peekTokenIs(Tokens.COMMA)) {
-      this.nextToken();
-      this.nextToken();
-
-      const argumentExpression = this.parseExpression(Precedence.LOWEST);
-
-      if (argumentExpression) {
-        args.push(argumentExpression);
-      }
-    }
-
-    if (!this.expectPeek(Tokens.RPAREN)) {
-      return null;
-    }
-
-    return args;
   }
   /** === Parsing Functions === */
 
