@@ -9,6 +9,7 @@ export {
   FunctionObject,
   StringObject,
   Builtin,
+  ArrayObject,
 } from 'object/object';
 
 export { Environment } from 'object/environment';

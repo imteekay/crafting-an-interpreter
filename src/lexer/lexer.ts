@@ -62,6 +62,10 @@ export class Lexer {
         return this.buildToken(Tokens.LBRACE, '{');
       case '}':
         return this.buildToken(Tokens.RBRACE, '}');
+      case '[':
+        return this.buildToken(Tokens.LBRACKET, '[');
+      case ']':
+        return this.buildToken(Tokens.RBRACKET, ']');
       case '!':
         if (this.peekChar() === '=') {
           this.readChar();

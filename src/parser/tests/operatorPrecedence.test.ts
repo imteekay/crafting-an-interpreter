@@ -68,6 +68,14 @@ describe('Parser', () => {
           input: 'add(a + b + c * d / f + g)',
           expected: 'add((((a + b) + ((c * d) / f)) + g))',
         },
+        {
+          input: 'a * [1, 2, 3, 4][b * c] * d',
+          expected: '((a * ([1, 2, 3, 4][(b * c)])) * d)',
+        },
+        {
+          input: 'add(a * b[2], b[1], 2 * [1, 2][1])',
+          expected: 'add((a * (b[2])), (b[1]), (2 * ([1, 2][1])))',
+        },
       ];
 
       for (const { input, expected } of tests) {
