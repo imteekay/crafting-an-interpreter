@@ -29,6 +29,7 @@ import {
   CallExpression,
   StringLiteral,
   ArrayLiteral,
+  IndexExpression,
 } from 'ast';
 
 import {
@@ -196,6 +197,24 @@ export class Evaluator {
         }
 
         return new ArrayObject(elements as EvalObject[]);
+      }
+      case ExpressionKind.IndexExpression: {
+        const left = this.evaluate((node as IndexExpression).left, env);
+
+        if (this.isError(left)) {
+          return left;
+        }
+
+        const index = this.evaluate((node as IndexExpression).index, env);
+
+        if (this.isError(index)) {
+          return index;
+        }
+
+        return this.evaluateIndexExpression(
+          left as EvalObject,
+          index as EvalObject
+        );
       }
       default:
         return null;
@@ -456,6 +475,28 @@ export class Evaluator {
     }
 
     return this.newError(`identifier not found: ${node.value}`);
+  }
+
+  private evaluateIndexExpression(left: EvalObject, index: EvalObject) {
+    if (
+      left.type() === ObjectTypes.ARRAY &&
+      index.type() === ObjectTypes.INTEGER
+    ) {
+      return this.evaluateArrayIndexExpression(left, index);
+    }
+
+    return this.newError(`index operator not supported: ${left.type()}`);
+  }
+
+  private evaluateArrayIndexExpression(array: EvalObject, index: EvalObject) {
+    const indexValue = (index as Integer).value;
+    const maxIndex = (array as ArrayObject).elements.length - 1;
+
+    if (indexValue < 0 || indexValue > maxIndex) {
+      return NULL;
+    }
+
+    return (array as ArrayObject).elements[indexValue];
   }
 
   private extendFunctionEnv(

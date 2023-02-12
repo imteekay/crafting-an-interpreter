@@ -366,13 +366,74 @@ describe('Evaluator', () => {
     });
   });
 
-  it('evaluates array literals', () => {
-    const tests = [{ input: '[1, 2 * 2, 3 + 3]', expected: [1, 4, 6] }];
+  describe('evaluates arrays', () => {
+    it('evaluates array literals', () => {
+      const tests = [
+        { input: '[1, 2 * 2, 3 + 3]', expected: [1, 4, 6] },
+        { input: '[1 + 1, 2 * 2, 3 - 3, 4 / 2]', expected: [2, 4, 0, 2] },
+      ];
 
-    for (const { input, expected } of tests) {
-      const evaluatedProgram = evaluate(input);
-      const elements = expected.map((int) => new Integer(int));
-      expect(evaluatedProgram).toEqual(new ArrayObject(elements));
-    }
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+        const elements = expected.map((int) => new Integer(int));
+        expect(evaluatedProgram).toEqual(new ArrayObject(elements));
+      }
+    });
+
+    it('evaluates index expressions', () => {
+      const tests = [
+        {
+          input: '[1, 2, 3][0]',
+          expected: 1,
+        },
+        {
+          input: '[1, 2, 3][1]',
+          expected: 2,
+        },
+        {
+          input: '[1, 2, 3][2]',
+          expected: 3,
+        },
+        {
+          input: 'let i = 0; [1][i];',
+          expected: 1,
+        },
+        {
+          input: '[1, 2, 3][1 + 1];',
+          expected: 3,
+        },
+        {
+          input: 'let myArray = [1, 2, 3]; myArray[2];',
+          expected: 3,
+        },
+        {
+          input:
+            'let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];',
+          expected: 6,
+        },
+        {
+          input: 'let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]',
+          expected: 2,
+        },
+        {
+          input: '[1, 2, 3][3]',
+          expected: null,
+        },
+        {
+          input: '[1, 2, 3][-1]',
+          expected: null,
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluatedProgram = evaluate(input);
+
+        if (evaluatedProgram) {
+          expect(evaluatedProgram).toEqual(new Integer(expected as number));
+        } else {
+          expect(evaluatedProgram).toEqual(new Null());
+        }
+      }
+    });
   });
 });
