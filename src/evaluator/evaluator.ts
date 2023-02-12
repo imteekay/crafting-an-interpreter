@@ -62,6 +62,10 @@ export class Evaluator {
         return new Integer(arg.value.length);
       }
 
+      if (arg instanceof ArrayObject) {
+        return new Integer(arg.elements.length);
+      }
+
       return this.newError(
         `argument to "len" not supported, got ${arg.type()}`
       );
