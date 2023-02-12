@@ -105,9 +105,10 @@ export class Evaluator {
       }
 
       const array = args[0] as ArrayObject;
+      const elementsLength = array.elements.length;
 
-      if (array.elements.length > 0) {
-        return array.elements[array.elements.length - 1];
+      if (elementsLength > 0) {
+        return array.elements[elementsLength - 1];
       }
 
       return NULL;
