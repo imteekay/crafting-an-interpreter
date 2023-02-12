@@ -136,6 +136,24 @@ export class Evaluator {
 
       return NULL;
     }),
+    push: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 2) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=2`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "push" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+      const elements = array.elements;
+
+      return new ArrayObject([...elements, args[1]]);
+    }),
   };
 
   evaluate(node: Node, env: Environment): EvalObject | null | undefined {
