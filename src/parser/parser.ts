@@ -428,6 +428,7 @@ export class Parser {
   private parseExpressionList(endToken: Tokens) {
     const list: Expression[] = [];
 
+    // if function call has no arguments
     if (this.peekTokenIs(endToken)) {
       this.nextToken();
       return list;
