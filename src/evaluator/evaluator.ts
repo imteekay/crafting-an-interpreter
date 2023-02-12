@@ -91,6 +91,27 @@ export class Evaluator {
 
       return NULL;
     }),
+    last: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "last" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+
+      if (array.elements.length > 0) {
+        return array.elements[array.elements.length - 1];
+      }
+
+      return NULL;
+    }),
   };
 
   evaluate(node: Node, env: Environment): EvalObject | null | undefined {
