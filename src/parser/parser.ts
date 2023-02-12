@@ -17,12 +17,13 @@ import {
   CallExpression,
   StringLiteral,
   ArrayLiteral,
+  IndexExpression,
 } from 'ast';
 
 export type ParserError = string;
 
 type prefixParseFn = () => Expression | null;
-type infixParseFn = (expression: Expression) => Expression;
+type infixParseFn = (expression: Expression) => Expression | null;
 
 enum Precedence {
   LOWEST = 1,
@@ -32,6 +33,7 @@ enum Precedence {
   PRODUCT, // *
   PREFIX, // -X or !X
   CALL, // myFunction(X)
+  INDEX, // [][1]
 }
 
 const precedences = new Map<TokenType, Precedence>([
@@ -44,6 +46,7 @@ const precedences = new Map<TokenType, Precedence>([
   [Tokens.SLASH, Precedence.PRODUCT],
   [Tokens.ASTERISK, Precedence.PRODUCT],
   [Tokens.LPAREN, Precedence.CALL],
+  [Tokens.LBRACKET, Precedence.INDEX],
 ]);
 
 export class Parser {
@@ -82,6 +85,7 @@ export class Parser {
     this.registerInfix(Tokens.NOT_EQUAL, this.parseInfixExpression.bind(this));
     this.registerInfix(Tokens.LESS_THAN, this.parseInfixExpression.bind(this));
     this.registerInfix(Tokens.LPAREN, this.parseCallExpression.bind(this));
+    this.registerInfix(Tokens.LBRACKET, this.parseIndexExpression.bind(this));
     this.registerInfix(
       Tokens.GREATER_THAN,
       this.parseInfixExpression.bind(this)
@@ -505,6 +509,23 @@ export class Parser {
     }
 
     return callExpression;
+  }
+
+  private parseIndexExpression(left: Expression) {
+    const indexExpression = new IndexExpression(this.currentToken, left);
+
+    this.nextToken();
+    const index = this.parseExpression(Precedence.LOWEST);
+
+    if (index) {
+      indexExpression.index = index;
+    }
+
+    if (!this.expectPeek(Tokens.RBRACKET)) {
+      return null;
+    }
+
+    return indexExpression;
   }
   /** === Parsing Functions === */
 

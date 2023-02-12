@@ -4,6 +4,8 @@ import {
   InfixExpression,
   IntegerLiteral,
   ArrayLiteral,
+  Identifier,
+  IndexExpression,
 } from 'ast';
 import { Token, Tokens } from 'token';
 import { parse } from './parse';
@@ -38,22 +40,32 @@ function buildInfix(
 describe('Parser', () => {
   describe('parseProgram', () => {
     it('validates ast after parsing', () => {
-      const input = '[1, 2 * 2, 3 + 3];';
+      const input = 'myArray[1 + 1];';
       const { statements } = parse(input);
 
       const statement = new ExpressionStatement(
-        new Token(Tokens.LBRACKET, '[')
+        new Token(Tokens.IDENT, 'myArray')
       );
 
-      const arrayLiteral = new ArrayLiteral(new Token(Tokens.LBRACKET, '['));
+      const leftExpression = new Identifier(
+        new Token(Tokens.IDENT, 'myArray'),
+        'myArray'
+      );
 
-      arrayLiteral.elements = [
-        new IntegerLiteral(new Token(Tokens.INT, '1'), 1),
-        buildInfix(2, 2, { token: Tokens.ASTERISK, op: '*' }),
-        buildInfix(3, 3, { token: Tokens.PLUS, op: '+' }),
-      ];
+      const indexExpression = new IndexExpression(
+        new Token(Tokens.LBRACKET, '['),
+        leftExpression
+      );
 
-      statement.expression = arrayLiteral;
+      const infixExpression = new InfixExpression(
+        new Token(Tokens.PLUS, '+'),
+        '+',
+        new IntegerLiteral(new Token(Tokens.INT, '1'), 1)
+      );
+
+      infixExpression.right = new IntegerLiteral(new Token(Tokens.INT, '1'), 1);
+      indexExpression.index = infixExpression;
+      statement.expression = indexExpression;
 
       expect(statements).toEqual([statement]);
     });

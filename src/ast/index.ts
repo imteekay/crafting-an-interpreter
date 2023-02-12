@@ -20,3 +20,4 @@ export { FunctionLiteral } from 'ast/FunctionLiteral';
 export { CallExpression } from 'ast/CallExpression';
 export { StringLiteral } from 'ast/StringLiteral';
 export { ArrayLiteral } from 'ast/ArrayLiteral';
+export { IndexExpression } from 'ast/IndexExpression';

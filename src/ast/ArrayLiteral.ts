@@ -16,6 +16,6 @@ export class ArrayLiteral implements BaseExpression {
   }
 
   string(): string {
-    return `[${this.elements.join(', ')}]`;
+    return `[${this.elements.map((element) => element.string()).join(', ')}]`;
   }
 }
