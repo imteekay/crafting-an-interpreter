@@ -113,6 +113,29 @@ export class Evaluator {
 
       return NULL;
     }),
+    rest: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "rest" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+      const elementsLength = array.elements.length;
+
+      if (elementsLength > 0) {
+        const restElements = array.elements.slice(1);
+        return new ArrayObject(restElements);
+      }
+
+      return NULL;
+    }),
   };
 
   evaluate(node: Node, env: Environment): EvalObject | null | undefined {
