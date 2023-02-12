@@ -16,6 +16,7 @@ import {
   FunctionLiteral,
   CallExpression,
   StringLiteral,
+  ArrayLiteral,
 } from 'ast';
 
 export type ParserError = string;
@@ -70,6 +71,7 @@ export class Parser {
     this.registerPrefix(Tokens.IF, this.parseIfExpression.bind(this));
     this.registerPrefix(Tokens.FUNCTION, this.parseFunctionLiteral.bind(this));
     this.registerPrefix(Tokens.STRING, this.parseStringLiteral.bind(this));
+    this.registerPrefix(Tokens.LBRACKET, this.parseArrayLiteral.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -410,6 +412,51 @@ export class Parser {
 
   private parseStringLiteral() {
     return new StringLiteral(this.currentToken, this.currentToken.literal);
+  }
+
+  private parseArrayLiteral() {
+    const array = new ArrayLiteral(this.currentToken);
+    const elements = this.parseExpressionList(Tokens.RBRACKET);
+
+    if (elements) {
+      array.elements = elements;
+    }
+
+    return array;
+  }
+
+  private parseExpressionList(endToken: Tokens) {
+    const list: Expression[] = [];
+
+    if (this.peekTokenIs(endToken)) {
+      this.nextToken();
+      return list;
+    }
+
+    this.nextToken();
+
+    const listItem = this.parseExpression(Precedence.LOWEST);
+
+    if (listItem) {
+      list.push(listItem);
+    }
+
+    while (this.peekTokenIs(Tokens.COMMA)) {
+      this.nextToken();
+      this.nextToken();
+
+      const listItem = this.parseExpression(Precedence.LOWEST);
+
+      if (listItem) {
+        list.push(listItem);
+      }
+    }
+
+    if (!this.expectPeek(endToken)) {
+      return null;
+    }
+
+    return list;
   }
 
   private parseFunctionParameters() {

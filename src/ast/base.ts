@@ -10,6 +10,7 @@ import { IfExpression } from 'ast/IfExpression';
 import { FunctionLiteral } from 'ast/FunctionLiteral';
 import { CallExpression } from 'ast/CallExpression';
 import { StringLiteral } from 'ast/StringLiteral';
+import { ArrayLiteral } from 'ast/ArrayLiteral';
 
 export enum ProgramKind {
   program = 'program',
@@ -32,6 +33,7 @@ export enum ExpressionKind {
   If = 'if',
   FunctionLiteral = 'functionLiteral',
   Call = 'call',
+  ArrayLiteral = 'arrayLiteral',
 }
 
 type NodeKind = ProgramKind | StatementKind | ExpressionKind;
@@ -60,4 +62,5 @@ export type Expression =
   | IfExpression
   | FunctionLiteral
   | CallExpression
-  | StringLiteral;
+  | StringLiteral
+  | ArrayLiteral;
