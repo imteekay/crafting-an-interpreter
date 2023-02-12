@@ -3,6 +3,7 @@ import { Lexer } from 'lexer';
 import { Parser } from 'parser';
 import { Evaluator } from 'evaluator';
 import {
+  ArrayObject,
   BooleanLiteral,
   Environment,
   ErrorObject,
@@ -363,5 +364,15 @@ describe('Evaluator', () => {
         expect(evaluatedProgram).toEqual(new ErrorObject(expected));
       }
     });
+  });
+
+  it('evaluates array literals', () => {
+    const tests = [{ input: '[1, 2 * 2, 3 + 3]', expected: [1, 4, 6] }];
+
+    for (const { input, expected } of tests) {
+      const evaluatedProgram = evaluate(input);
+      const elements = expected.map((int) => new Integer(int));
+      expect(evaluatedProgram).toEqual(new ArrayObject(elements));
+    }
   });
 });

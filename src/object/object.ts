@@ -19,6 +19,7 @@ export enum ObjectTypes {
   FUNCTION = 'FUNCTION',
   STRING = 'STRING',
   BUILTIN = 'BUILTIN',
+  ARRAY = 'ARRAY',
 }
 
 export class Integer implements EvalObject {
@@ -156,5 +157,21 @@ export class Builtin implements EvalObject {
 
   inspect() {
     return 'builting function';
+  }
+}
+
+export class ArrayObject implements EvalObject {
+  elements: EvalObject[];
+
+  constructor(elements: EvalObject[]) {
+    this.elements = elements;
+  }
+
+  type() {
+    return ObjectTypes.ARRAY;
+  }
+
+  inspect() {
+    return `[${this.elements.map((element) => element.inspect()).join(', ')}]`;
   }
 }

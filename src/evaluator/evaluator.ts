@@ -1,4 +1,5 @@
 import {
+  ArrayObject,
   BooleanLiteral,
   Builtin,
   Environment,
@@ -27,6 +28,7 @@ import {
   FunctionLiteral,
   CallExpression,
   StringLiteral,
+  ArrayLiteral,
 } from 'ast';
 
 import {
@@ -182,6 +184,18 @@ export class Evaluator {
         }
 
         return this.applyFunction(fn, args);
+      }
+      case ExpressionKind.ArrayLiteral: {
+        const elements = this.evaluateExpressions(
+          (node as ArrayLiteral).elements,
+          env
+        );
+
+        if (elements.length === 1 && this.isError(elements[0])) {
+          return elements[0];
+        }
+
+        return new ArrayObject(elements as EvalObject[]);
       }
       default:
         return null;
