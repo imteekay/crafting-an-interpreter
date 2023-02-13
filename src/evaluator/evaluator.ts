@@ -62,9 +62,97 @@ export class Evaluator {
         return new Integer(arg.value.length);
       }
 
+      if (arg instanceof ArrayObject) {
+        return new Integer(arg.elements.length);
+      }
+
       return this.newError(
         `argument to "len" not supported, got ${arg.type()}`
       );
+    }),
+    first: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "first" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+
+      if (array.elements.length > 0) {
+        return array.elements[0];
+      }
+
+      return NULL;
+    }),
+    last: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "last" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+      const elementsLength = array.elements.length;
+
+      if (elementsLength > 0) {
+        return array.elements[elementsLength - 1];
+      }
+
+      return NULL;
+    }),
+    rest: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 1) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=1`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "rest" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+      const elementsLength = array.elements.length;
+
+      if (elementsLength > 0) {
+        const restElements = array.elements.slice(1);
+        return new ArrayObject(restElements);
+      }
+
+      return NULL;
+    }),
+    push: new Builtin((...args: EvalObject[]) => {
+      if (args.length !== 2) {
+        return this.newError(
+          `wrong number of arguments. got=${args.length}, want=2`
+        );
+      }
+
+      if (args[0].type() !== ObjectTypes.ARRAY) {
+        return this.newError(
+          `argument to "push" must be ARRAY, got ${args[0].type()}`
+        );
+      }
+
+      const array = args[0] as ArrayObject;
+      const elements = array.elements;
+
+      return new ArrayObject([...elements, args[1]]);
     }),
   };
 
