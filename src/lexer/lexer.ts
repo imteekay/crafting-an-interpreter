@@ -50,6 +50,8 @@ export class Lexer {
         }
       case ';':
         return this.buildToken(Tokens.SEMICOLON, ';');
+      case ':':
+        return this.buildToken(Tokens.COLON, ':');
       case '(':
         return this.buildToken(Tokens.LPAREN, '(');
       case ')':
