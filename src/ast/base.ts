@@ -12,6 +12,7 @@ import { CallExpression } from 'ast/CallExpression';
 import { StringLiteral } from 'ast/StringLiteral';
 import { ArrayLiteral } from 'ast/ArrayLiteral';
 import { IndexExpression } from 'ast/IndexExpression';
+import { HashLiteral } from 'ast/HashLiteral';
 
 export enum ProgramKind {
   program = 'program',
@@ -36,6 +37,7 @@ export enum ExpressionKind {
   Call = 'call',
   ArrayLiteral = 'arrayLiteral',
   IndexExpression = 'indexExpression',
+  HashLiteral = 'hashLiteral',
 }
 
 type NodeKind = ProgramKind | StatementKind | ExpressionKind;
@@ -66,4 +68,5 @@ export type Expression =
   | CallExpression
   | StringLiteral
   | ArrayLiteral
-  | IndexExpression;
+  | IndexExpression
+  | HashLiteral;
