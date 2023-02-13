@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { BlockStatement, Identifier } from 'ast';
 import { Environment } from 'object/environment';
 
@@ -36,6 +37,10 @@ export class Integer implements EvalObject {
   inspect() {
     return this.value.toString();
   }
+
+  hashKey() {
+    return new HashKey(this.type(), this.value);
+  }
 }
 
 export class BooleanLiteral implements EvalObject {
@@ -51,6 +56,10 @@ export class BooleanLiteral implements EvalObject {
 
   inspect() {
     return this.value.toString();
+  }
+
+  hashKey() {
+    return new HashKey(this.type(), this.value ? 1 : 0);
   }
 }
 
@@ -140,6 +149,25 @@ export class StringObject implements EvalObject {
   inspect() {
     return this.value;
   }
+
+  hashKey() {
+    return new HashKey(this.type(), this.hashCode(this.value));
+  }
+
+  private hashCode(str: string) {
+    let hash = 0;
+    let chr;
+
+    if (str.length === 0) return hash;
+
+    for (let i = 0; i < str.length; i++) {
+      chr = str.charCodeAt(i);
+      hash = (hash << 5) - hash + chr;
+      hash |= 0;
+    }
+
+    return hash;
+  }
 }
 
 type BuiltingFunction = (...args: EvalObject[]) => EvalObject;
@@ -173,5 +201,15 @@ export class ArrayObject implements EvalObject {
 
   inspect() {
     return `[${this.elements.map((element) => element.inspect()).join(', ')}]`;
+  }
+}
+
+class HashKey {
+  type: ObjectType;
+  value: number;
+
+  constructor(type: ObjectType, value: number) {
+    this.type = type;
+    this.value = value;
   }
 }
