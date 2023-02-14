@@ -605,7 +605,13 @@ export class Evaluator {
         return key;
       }
 
-      if (!isHashable(key)) {
+      if (
+        !(
+          key instanceof Integer ||
+          key instanceof BooleanLiteral ||
+          key instanceof StringObject
+        )
+      ) {
         return this.newError(`unusable as hash key: ${key?.type()}`);
       }
 
