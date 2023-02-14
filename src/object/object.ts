@@ -205,7 +205,7 @@ export class ArrayObject implements EvalObject {
   }
 }
 
-class HashKey {
+export class HashKey {
   type: ObjectType;
   value: number;
 
@@ -215,13 +215,22 @@ class HashKey {
   }
 }
 
-class HashPair {
+export class HashPair {
   key: EvalObject;
   value: EvalObject;
+
+  constructor(key: EvalObject, value: EvalObject) {
+    this.key = key;
+    this.value = value;
+  }
 }
 
 export class Hash implements EvalObject {
   pairs: Map<HashKey, HashPair>;
+
+  constructor(pairs: Map<HashKey, HashPair>) {
+    this.pairs = pairs;
+  }
 
   type() {
     return ObjectTypes.HASH;
@@ -238,6 +247,7 @@ export class Hash implements EvalObject {
   }
 }
 
-export interface Hashable {
-  hashKey: () => HashKey;
-}
+export const isHashable = (key: EvalObject | null | undefined) =>
+  key instanceof Integer ||
+  key instanceof BooleanLiteral ||
+  key instanceof StringObject;

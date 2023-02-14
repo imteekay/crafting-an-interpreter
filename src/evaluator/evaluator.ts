@@ -6,11 +6,15 @@ import {
   ErrorObject,
   EvalObject,
   FunctionObject,
+  Hash,
+  HashKey,
+  HashPair,
   Integer,
   Null,
   ObjectTypes,
   ReturnValue,
   StringObject,
+  isHashable,
 } from 'object';
 
 import {
@@ -30,6 +34,7 @@ import {
   StringLiteral,
   ArrayLiteral,
   IndexExpression,
+  HashLiteral,
 } from 'ast';
 
 import {
@@ -303,6 +308,9 @@ export class Evaluator {
           left as EvalObject,
           index as EvalObject
         );
+      }
+      case ExpressionKind.HashLiteral: {
+        return this.evaluateHashLiteral(node, env);
       }
       default:
         return null;
@@ -585,6 +593,33 @@ export class Evaluator {
     }
 
     return (array as ArrayObject).elements[indexValue];
+  }
+
+  private evaluateHashLiteral(node: HashLiteral, env: Environment) {
+    const pairs = new Map<HashKey, HashPair>();
+
+    for (const [nodeKey, nodeValue] of node.pairs.entries()) {
+      const key = this.evaluate(nodeKey, env);
+
+      if (this.isError(key)) {
+        return key;
+      }
+
+      if (!isHashable(key)) {
+        return this.newError(`unusable as hash key: ${key?.type()}`);
+      }
+
+      const value = this.evaluate(nodeValue, env);
+
+      if (this.isError(value) || !value) {
+        return value;
+      }
+
+      const hashed = key.hashKey();
+      pairs.set(hashed, new HashPair(key, value));
+    }
+
+    return new Hash(pairs);
   }
 
   private extendFunctionEnv(

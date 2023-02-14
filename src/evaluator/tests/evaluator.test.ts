@@ -8,8 +8,11 @@ import {
   Environment,
   ErrorObject,
   FunctionObject,
+  Hash,
+  HashPair,
   Integer,
   Null,
+  ObjectTypes,
   StringObject,
 } from 'object';
 
@@ -432,6 +435,41 @@ describe('Evaluator', () => {
           expect(evaluatedProgram).toEqual(new Integer(expected as number));
         } else {
           expect(evaluatedProgram).toEqual(new Null());
+        }
+      }
+    });
+  });
+
+  describe('evaluates hash literals', () => {
+    it('evaluates a hashmap', () => {
+      const input = `let two = "two";
+      {
+        "one": 10 - 9,
+        "two": 1 + 1,
+        "thr" + "ee": 6 / 2,
+        4: 4,
+        true: 5,
+        false: 6,
+      }`;
+
+      const evaluatedProgram = evaluate(input);
+      expect(evaluatedProgram instanceof Hash).toEqual(true);
+
+      const expectedHashMap = new Map();
+      expectedHashMap.set(new StringObject('one').hashKey().value, 1);
+      expectedHashMap.set(new StringObject('two').hashKey().value, 2);
+      expectedHashMap.set(new StringObject('three').hashKey().value, 3);
+      expectedHashMap.set(new Integer(4).hashKey().value, 4);
+      expectedHashMap.set(new BooleanLiteral(true).hashKey().value, 5);
+      expectedHashMap.set(new BooleanLiteral(false).hashKey().value, 6);
+
+      if (evaluatedProgram instanceof Hash) {
+        for (const [
+          expectedKey,
+          expectedValue,
+        ] of evaluatedProgram.pairs.entries()) {
+          const hashPair = expectedHashMap.get(expectedKey.value);
+          expect(hashPair.toString()).toEqual(expectedValue.value.inspect());
         }
       }
     });
