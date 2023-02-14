@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { BlockStatement, Identifier } from 'ast';
 import { Environment } from 'object/environment';
 
@@ -40,7 +39,7 @@ export class Integer implements EvalObject {
   }
 
   hashKey() {
-    return new HashKey(this.type(), this.value);
+    return JSON.stringify(new HashKey(this.type(), this.value));
   }
 }
 
@@ -60,7 +59,7 @@ export class BooleanLiteral implements EvalObject {
   }
 
   hashKey() {
-    return new HashKey(this.type(), this.value ? 1 : 0);
+    return JSON.stringify(new HashKey(this.type(), this.value ? 1 : 0));
   }
 }
 
@@ -152,7 +151,7 @@ export class StringObject implements EvalObject {
   }
 
   hashKey() {
-    return new HashKey(this.type(), this.hashCode(this.value));
+    return JSON.stringify(new HashKey(this.type(), this.hashCode(this.value)));
   }
 
   private hashCode(str: string) {
@@ -226,9 +225,9 @@ export class HashPair {
 }
 
 export class Hash implements EvalObject {
-  pairs: Map<HashKey, HashPair>;
+  pairs: Map<string, HashPair>;
 
-  constructor(pairs: Map<HashKey, HashPair>) {
+  constructor(pairs: Map<string, HashPair>) {
     this.pairs = pairs;
   }
 
@@ -246,8 +245,3 @@ export class Hash implements EvalObject {
     return `{${pairs.join(', ')}}`;
   }
 }
-
-export const isHashable = (key: EvalObject | null | undefined) =>
-  key instanceof Integer ||
-  key instanceof BooleanLiteral ||
-  key instanceof StringObject;

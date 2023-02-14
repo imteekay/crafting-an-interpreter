@@ -7,14 +7,12 @@ import {
   EvalObject,
   FunctionObject,
   Hash,
-  HashKey,
   HashPair,
   Integer,
   Null,
   ObjectTypes,
   ReturnValue,
   StringObject,
-  isHashable,
 } from 'object';
 
 import {
@@ -310,7 +308,7 @@ export class Evaluator {
         );
       }
       case ExpressionKind.HashLiteral: {
-        return this.evaluateHashLiteral(node, env);
+        return this.evaluateHashLiteral(node as HashLiteral, env);
       }
       default:
         return null;
@@ -581,6 +579,10 @@ export class Evaluator {
       return this.evaluateArrayIndexExpression(left, index);
     }
 
+    if (left instanceof Hash) {
+      return this.evaluateHashIndexExpression(left, index);
+    }
+
     return this.newError(`index operator not supported: ${left.type()}`);
   }
 
@@ -595,8 +597,29 @@ export class Evaluator {
     return (array as ArrayObject).elements[indexValue];
   }
 
+  private evaluateHashIndexExpression(hash: Hash, index: EvalObject) {
+    if (
+      !(
+        index instanceof Integer ||
+        index instanceof BooleanLiteral ||
+        index instanceof StringObject
+      )
+    ) {
+      return this.newError(`unusable as hash key: ${index?.type()}`);
+    }
+
+    const pair = hash.pairs.get(index.hashKey());
+    console.log('pair.value', hash.pairs, index.hashKey(), pair);
+
+    if (!pair) {
+      return NULL;
+    }
+
+    return pair.value;
+  }
+
   private evaluateHashLiteral(node: HashLiteral, env: Environment) {
-    const pairs = new Map<HashKey, HashPair>();
+    const pairs = new Map<string, HashPair>();
 
     for (const [nodeKey, nodeValue] of node.pairs.entries()) {
       const key = this.evaluate(nodeKey, env);

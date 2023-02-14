@@ -9,10 +9,8 @@ import {
   ErrorObject,
   FunctionObject,
   Hash,
-  HashPair,
   Integer,
   Null,
-  ObjectTypes,
   StringObject,
 } from 'object';
 
@@ -250,6 +248,10 @@ describe('Evaluator', () => {
           input: '"Hello" - "World"',
           expected: 'unknown operator: STRING - STRING',
         },
+        {
+          input: '{"name": "Monkey"}[fn(x) { x }];',
+          expected: 'unusable as hash key: FUNCTION',
+        },
       ];
 
       for (const { input, expected } of tests) {
@@ -456,20 +458,61 @@ describe('Evaluator', () => {
       expect(evaluatedProgram instanceof Hash).toEqual(true);
 
       const expectedHashMap = new Map();
-      expectedHashMap.set(new StringObject('one').hashKey().value, 1);
-      expectedHashMap.set(new StringObject('two').hashKey().value, 2);
-      expectedHashMap.set(new StringObject('three').hashKey().value, 3);
-      expectedHashMap.set(new Integer(4).hashKey().value, 4);
-      expectedHashMap.set(new BooleanLiteral(true).hashKey().value, 5);
-      expectedHashMap.set(new BooleanLiteral(false).hashKey().value, 6);
+      expectedHashMap.set(new StringObject('one').hashKey(), 1);
+      expectedHashMap.set(new StringObject('two').hashKey(), 2);
+      expectedHashMap.set(new StringObject('three').hashKey(), 3);
+      expectedHashMap.set(new Integer(4).hashKey(), 4);
+      expectedHashMap.set(new BooleanLiteral(true).hashKey(), 5);
+      expectedHashMap.set(new BooleanLiteral(false).hashKey(), 6);
 
       if (evaluatedProgram instanceof Hash) {
-        for (const [
-          expectedKey,
-          expectedValue,
-        ] of evaluatedProgram.pairs.entries()) {
-          const hashPair = expectedHashMap.get(expectedKey.value);
-          expect(hashPair.toString()).toEqual(expectedValue.value.inspect());
+        for (const [key, hashPair] of evaluatedProgram.pairs.entries()) {
+          const expectedHashPair = expectedHashMap.get(key);
+          expect(expectedHashPair.toString()).toEqual(hashPair.value.inspect());
+        }
+      }
+    });
+
+    it('evaluates hash index expressions', () => {
+      const tests = [
+        {
+          input: `{"foo": 5}["foo"]`,
+          expected: 5,
+        },
+
+        {
+          input: `{"foo": 5}["bar"]`,
+          expected: null,
+        },
+        {
+          input: `let key = "foo"; {"foo": 5}[key]`,
+          expected: 5,
+        },
+        {
+          input: `{}["foo"]`,
+          expected: null,
+        },
+        {
+          input: `{5: 5}[5]`,
+          expected: 5,
+        },
+        {
+          input: `{true: 5}[true]`,
+          expected: 5,
+        },
+        {
+          input: `{false: 5}[false]`,
+          expected: 5,
+        },
+      ];
+
+      for (const { input, expected } of tests) {
+        const evaluated = evaluate(input);
+
+        if (expected) {
+          expect(evaluated).toEqual(new Integer(expected));
+        } else {
+          expect(evaluated).toEqual(new Null());
         }
       }
     });
