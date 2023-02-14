@@ -52,6 +52,13 @@ type Builtins = Record<string, EvalObject>;
 
 export class Evaluator {
   builtins: Builtins = {
+    print: new Builtin((...args: EvalObject[]) => {
+      for (const arg of args) {
+        console.log(arg.inspect());
+      }
+
+      return NULL;
+    }),
     len: new Builtin((...args: EvalObject[]) => {
       if (args.length !== 1) {
         return this.newError(
