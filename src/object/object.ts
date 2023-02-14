@@ -20,6 +20,7 @@ export enum ObjectTypes {
   STRING = 'STRING',
   BUILTIN = 'BUILTIN',
   ARRAY = 'ARRAY',
+  HASH = 'HASH',
 }
 
 export class Integer implements EvalObject {
@@ -36,6 +37,10 @@ export class Integer implements EvalObject {
   inspect() {
     return this.value.toString();
   }
+
+  hashKey() {
+    return JSON.stringify(new HashKey(this.type(), this.value));
+  }
 }
 
 export class BooleanLiteral implements EvalObject {
@@ -51,6 +56,10 @@ export class BooleanLiteral implements EvalObject {
 
   inspect() {
     return this.value.toString();
+  }
+
+  hashKey() {
+    return JSON.stringify(new HashKey(this.type(), this.value ? 1 : 0));
   }
 }
 
@@ -140,6 +149,25 @@ export class StringObject implements EvalObject {
   inspect() {
     return this.value;
   }
+
+  hashKey() {
+    return JSON.stringify(new HashKey(this.type(), this.hashCode(this.value)));
+  }
+
+  private hashCode(str: string) {
+    let hash = 0;
+    let chr;
+
+    if (str.length === 0) return hash;
+
+    for (let i = 0; i < str.length; i++) {
+      chr = str.charCodeAt(i);
+      hash = (hash << 5) - hash + chr;
+      hash |= 0;
+    }
+
+    return hash;
+  }
 }
 
 type BuiltingFunction = (...args: EvalObject[]) => EvalObject;
@@ -173,5 +201,47 @@ export class ArrayObject implements EvalObject {
 
   inspect() {
     return `[${this.elements.map((element) => element.inspect()).join(', ')}]`;
+  }
+}
+
+export class HashKey {
+  type: ObjectType;
+  value: number;
+
+  constructor(type: ObjectType, value: number) {
+    this.type = type;
+    this.value = value;
+  }
+}
+
+export class HashPair {
+  key: EvalObject;
+  value: EvalObject;
+
+  constructor(key: EvalObject, value: EvalObject) {
+    this.key = key;
+    this.value = value;
+  }
+}
+
+export class Hash implements EvalObject {
+  pairs: Map<string, HashPair>;
+
+  constructor(pairs: Map<string, HashPair>) {
+    this.pairs = pairs;
+  }
+
+  type() {
+    return ObjectTypes.HASH;
+  }
+
+  inspect() {
+    const pairs = [];
+
+    for (const [_, pair] of this.pairs.entries()) {
+      pairs.push(`${pair.key.inspect()}:${pair.value.inspect()}`);
+    }
+
+    return `{${pairs.join(', ')}}`;
   }
 }

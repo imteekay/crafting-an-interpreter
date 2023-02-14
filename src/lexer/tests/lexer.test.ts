@@ -28,6 +28,8 @@ describe('Lexer', () => {
       "foobar";
       "foo bar";
       [9, 9];
+
+      {"foo": "bar"}
     `;
 
     const tokens: Token[] = [
@@ -114,6 +116,11 @@ describe('Lexer', () => {
       { type: Tokens.INT, literal: '9' },
       { type: Tokens.RBRACKET, literal: ']' },
       { type: Tokens.SEMICOLON, literal: ';' },
+      { type: Tokens.LBRACE, literal: '{' },
+      { type: Tokens.STRING, literal: 'foo' },
+      { type: Tokens.COLON, literal: ':' },
+      { type: Tokens.STRING, literal: 'bar' },
+      { type: Tokens.RBRACE, literal: '}' },
       { type: Tokens.EOF, literal: '' },
     ];
 

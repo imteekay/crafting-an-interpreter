@@ -18,6 +18,7 @@ import {
   StringLiteral,
   ArrayLiteral,
   IndexExpression,
+  HashLiteral,
 } from 'ast';
 
 export type ParserError = string;
@@ -75,6 +76,7 @@ export class Parser {
     this.registerPrefix(Tokens.FUNCTION, this.parseFunctionLiteral.bind(this));
     this.registerPrefix(Tokens.STRING, this.parseStringLiteral.bind(this));
     this.registerPrefix(Tokens.LBRACKET, this.parseArrayLiteral.bind(this));
+    this.registerPrefix(Tokens.LBRACE, this.parseHashLiteral.bind(this));
 
     // Parsing infix expressions
     this.registerInfix(Tokens.PLUS, this.parseInfixExpression.bind(this));
@@ -462,6 +464,36 @@ export class Parser {
     }
 
     return list;
+  }
+
+  private parseHashLiteral() {
+    const hash = new HashLiteral(this.currentToken);
+
+    while (!this.peekTokenIs(Tokens.RBRACE)) {
+      this.nextToken();
+      const key = this.parseExpression(Precedence.LOWEST);
+
+      if (!this.expectPeek(Tokens.COLON)) {
+        return null;
+      }
+
+      this.nextToken();
+      const value = this.parseExpression(Precedence.LOWEST);
+
+      if (key && value) {
+        hash.pairs.set(key, value);
+      }
+
+      if (!this.peekTokenIs(Tokens.RBRACE) && !this.expectPeek(Tokens.COMMA)) {
+        return null;
+      }
+    }
+
+    if (!this.expectPeek(Tokens.RBRACE)) {
+      return null;
+    }
+
+    return hash;
   }
 
   private parseFunctionParameters() {

@@ -6,6 +6,8 @@ import {
   ErrorObject,
   EvalObject,
   FunctionObject,
+  Hash,
+  HashPair,
   Integer,
   Null,
   ObjectTypes,
@@ -30,6 +32,7 @@ import {
   StringLiteral,
   ArrayLiteral,
   IndexExpression,
+  HashLiteral,
 } from 'ast';
 
 import {
@@ -49,6 +52,13 @@ type Builtins = Record<string, EvalObject>;
 
 export class Evaluator {
   builtins: Builtins = {
+    print: new Builtin((...args: EvalObject[]) => {
+      for (const arg of args) {
+        console.log(arg.inspect());
+      }
+
+      return NULL;
+    }),
     len: new Builtin((...args: EvalObject[]) => {
       if (args.length !== 1) {
         return this.newError(
@@ -303,6 +313,9 @@ export class Evaluator {
           left as EvalObject,
           index as EvalObject
         );
+      }
+      case ExpressionKind.HashLiteral: {
+        return this.evaluateHashLiteral(node as HashLiteral, env);
       }
       default:
         return null;
@@ -573,6 +586,10 @@ export class Evaluator {
       return this.evaluateArrayIndexExpression(left, index);
     }
 
+    if (left instanceof Hash) {
+      return this.evaluateHashIndexExpression(left, index);
+    }
+
     return this.newError(`index operator not supported: ${left.type()}`);
   }
 
@@ -585,6 +602,59 @@ export class Evaluator {
     }
 
     return (array as ArrayObject).elements[indexValue];
+  }
+
+  private evaluateHashIndexExpression(hash: Hash, index: EvalObject) {
+    if (
+      !(
+        index instanceof Integer ||
+        index instanceof BooleanLiteral ||
+        index instanceof StringObject
+      )
+    ) {
+      return this.newError(`unusable as hash key: ${index?.type()}`);
+    }
+
+    const pair = hash.pairs.get(index.hashKey());
+
+    if (!pair) {
+      return NULL;
+    }
+
+    return pair.value;
+  }
+
+  private evaluateHashLiteral(node: HashLiteral, env: Environment) {
+    const pairs = new Map<string, HashPair>();
+
+    for (const [nodeKey, nodeValue] of node.pairs.entries()) {
+      const key = this.evaluate(nodeKey, env);
+
+      if (this.isError(key)) {
+        return key;
+      }
+
+      if (
+        !(
+          key instanceof Integer ||
+          key instanceof BooleanLiteral ||
+          key instanceof StringObject
+        )
+      ) {
+        return this.newError(`unusable as hash key: ${key?.type()}`);
+      }
+
+      const value = this.evaluate(nodeValue, env);
+
+      if (this.isError(value) || !value) {
+        return value;
+      }
+
+      const hashed = key.hashKey();
+      pairs.set(hashed, new HashPair(key, value));
+    }
+
+    return new Hash(pairs);
   }
 
   private extendFunctionEnv(

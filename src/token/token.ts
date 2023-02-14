@@ -31,6 +31,7 @@ export enum Tokens {
 
   // Delimiters
   COMMA = ',',
+  COLON = ':',
   SEMICOLON = ';',
   LPAREN = '(',
   RPAREN = ')',
