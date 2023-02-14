@@ -10,6 +10,7 @@ export {
   StringObject,
   Builtin,
   ArrayObject,
+  Hash,
 } from 'object/object';
 
 export { Environment } from 'object/environment';

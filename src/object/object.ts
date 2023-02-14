@@ -21,6 +21,7 @@ export enum ObjectTypes {
   STRING = 'STRING',
   BUILTIN = 'BUILTIN',
   ARRAY = 'ARRAY',
+  HASH = 'HASH',
 }
 
 export class Integer implements EvalObject {
@@ -212,4 +213,31 @@ class HashKey {
     this.type = type;
     this.value = value;
   }
+}
+
+class HashPair {
+  key: EvalObject;
+  value: EvalObject;
+}
+
+export class Hash implements EvalObject {
+  pairs: Map<HashKey, HashPair>;
+
+  type() {
+    return ObjectTypes.HASH;
+  }
+
+  inspect() {
+    const pairs = [];
+
+    for (const [_, pair] of this.pairs.entries()) {
+      pairs.push(`${pair.key.inspect()}:${pair.value.inspect()}`);
+    }
+
+    return `{${pairs.join(', ')}}`;
+  }
+}
+
+export interface Hashable {
+  hashKey: () => HashKey;
 }
