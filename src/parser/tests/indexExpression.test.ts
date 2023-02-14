@@ -3,39 +3,11 @@ import {
   ExpressionStatement,
   InfixExpression,
   IntegerLiteral,
-  ArrayLiteral,
   Identifier,
   IndexExpression,
 } from 'ast';
 import { Token, Tokens } from 'token';
 import { parse } from './parse';
-
-function buildInfix(
-  integerLiteral1: number,
-  integerLiteral2: number,
-  operator: {
-    token: Tokens;
-    op: string;
-  }
-) {
-  const integerLiteral = new IntegerLiteral(
-    new Token(Tokens.INT, integerLiteral1.toString()),
-    integerLiteral1
-  );
-
-  const infixExpression = new InfixExpression(
-    new Token(operator.token, operator.op),
-    operator.op,
-    integerLiteral
-  );
-
-  infixExpression.right = new IntegerLiteral(
-    new Token(Tokens.INT, integerLiteral2.toString()),
-    integerLiteral2
-  );
-
-  return infixExpression;
-}
 
 describe('Parser', () => {
   describe('parseProgram', () => {
