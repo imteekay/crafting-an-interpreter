@@ -609,7 +609,6 @@ export class Evaluator {
     }
 
     const pair = hash.pairs.get(index.hashKey());
-    console.log('pair.value', hash.pairs, index.hashKey(), pair);
 
     if (!pair) {
       return NULL;
